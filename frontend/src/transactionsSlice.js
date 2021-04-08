@@ -6,13 +6,14 @@ import {
 import axios from "axios";
 
 const transactionsAdapter = createEntityAdapter({
-  selectId: (transaction) => transaction._id,
+  selectId: (transaction) => transaction._id.$oid,
 });
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async () => {
     const response = await axios.get("/transactions");
+    console.log(response.data);
     return response.data;
   }
 );
@@ -38,6 +39,6 @@ export const {
   selectIds: selectTransactionsIds,
   selectEntities: selectTransactionEntities,
   selectTotal: selectTotalTransactions,
-} = transactionsAdapter.getSelectors((state) => state.transactionsList);
+} = transactionsAdapter.getSelectors((state) => state.transactions);
 
-export default transactionsSlice;
+export default transactionsSlice.reducer;

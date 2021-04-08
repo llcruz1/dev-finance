@@ -1,4 +1,4 @@
-from flask import Blueprint,request, jsonify
+from flask import Blueprint, request, jsonify
 from models import Transaction
 
 transactions = Blueprint('transactions', __name__)
