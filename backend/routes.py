@@ -5,8 +5,8 @@ transactions = Blueprint('transactions', __name__)
 
 @transactions.route('/transactions', methods=['GET'])
 def getTransactions():
-    transactions = Transaction.objects()
-    return jsonify(transactions)
+    transactions = Transaction.objects().to_json()
+    return transactions
 
 @transactions.route('/transactions', methods=['POST'])
 def createTransaction():
@@ -21,18 +21,18 @@ def createTransaction():
 
 @transactions.route('/transaction/<id>', methods=['GET'])
 def getTransaction(id):
-    transaction = Transaction.objects.get_or_404(id=id)
+    transaction = Transaction.objects.get(id=id)
     return jsonify(transaction)
 
 @transactions.route('/transactions/<id>', methods=['DELETE'])
 def deleteTransaction(id):
-    transaction = Transaction.objects.get_or_404(id=id)
+    transaction = Transaction.objects.get(id=id)
     transaction.delete()
     return jsonify(str(transaction.id))
 
 @transactions.route('/transactions/<id>', methods=['PUT'])
 def updateTransaction(id):
     body = request.get_json()
-    transaction = Transaction.objects.get_or_404(id=id)
+    transaction = Transaction.objects.get(id=id).to_json()
     transaction.update(**body)
-    return jsonify(str(transaction.id))
+    return str(transaction.id)
