@@ -6,14 +6,24 @@ import {
 import axios from "axios";
 
 const transactionsAdapter = createEntityAdapter({
-  selectId: (transaction) => transaction._id.$oid,
+  //selectId: (transaction) => transaction._id.$oid,
 });
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async () => {
     const response = await axios.get("/transactions");
-    console.log(response.data);
+    return response.data;
+  }
+);
+
+export const updateTransaction = createAsyncThunk(
+  "transactions/updateTransaction",
+  async (transaction) => {
+    const response = await axios.put(
+      `/transactions/${transaction.id}`,
+      transaction
+    );
     return response.data;
   }
 );
@@ -21,14 +31,28 @@ export const getTransactions = createAsyncThunk(
 export const transactionsSlice = createSlice({
   name: "transactions",
   initialState: transactionsAdapter.getInitialState({
-    status: "not_loaded",
+    status: "idle",
     error: null,
   }),
   reducers: {},
   extraReducers: {
+    [getTransactions.pending]: (state, action) => {
+      state.status = "loading";
+    },
     [getTransactions.fulfilled]: (state, action) => {
       state.status = "loaded";
       transactionsAdapter.setAll(state, action.payload);
+    },
+    [getTransactions.rejected]: (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    },
+    [updateTransaction.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [updateTransaction.fulfilled]: (state, action) => {
+      state.status = "saved";
+      transactionsAdapter.upsertOne(state, action.payload);
     },
   },
 });
