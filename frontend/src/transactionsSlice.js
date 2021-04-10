@@ -6,7 +6,7 @@ import {
 import axios from "axios";
 
 const transactionsAdapter = createEntityAdapter({
-  //selectId: (transaction) => transaction._id.$oid,
+  //selectId: (transaction) => transaction.id,
 });
 
 export const getTransactions = createAsyncThunk(

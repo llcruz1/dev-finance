@@ -15,8 +15,10 @@ function TransactionsList() {
   const count = useSelector(selectTotalTransactions);
 
   useEffect(() => {
-    dispatch(getTransactions());
-  }, [dispatch]);
+    if (status === "idle" || status === "saved") {
+      dispatch(getTransactions());
+    }
+  }, [status, dispatch]);
 
   return (
     <div>
@@ -30,9 +32,17 @@ function TransactionsList() {
           </tr>
         </thead>
         {status === "loading" ? (
-          <span>Loading...</span>
+          <tbody>
+            <tr>
+              <td>Loading...</td>
+            </tr>
+          </tbody>
         ) : status === "failed" ? (
-          <span>{error}</span>
+          <tbody>
+            <tr>
+              <td>{error}</td>
+            </tr>
+          </tbody>
         ) : (
           <tbody>
             {transactions.map((transaction) => (

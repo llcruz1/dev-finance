@@ -9,8 +9,8 @@ function FormPage({ match, history }) {
   const id = match.params.id;
   const transaction = useSelector((state) => selectTransactionById(state, id));
 
-  function onSubmit(data) {
-    dispatch(updateTransaction({ ...data, id: transaction.id }));
+  function onSubmit(FormData) {
+    dispatch(updateTransaction({ ...FormData, id: transaction.id }));
     history.push("/");
   }
 
