@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   getTransactions,
+  deleteTransaction,
   selectAllTransactions,
   selectTotalTransactions,
 } from "../transactionsSlice";
@@ -15,10 +16,14 @@ function TransactionsList() {
   const count = useSelector(selectTotalTransactions);
 
   useEffect(() => {
-    if (status === "idle" || status === "saved") {
+    if (status === "idle" || status === "saved" || status === "deleted") {
       dispatch(getTransactions());
     }
   }, [status, dispatch]);
+
+  function handleDeleteTransaction(id) {
+    dispatch(deleteTransaction(id));
+  }
 
   return (
     <div>
@@ -55,7 +60,11 @@ function TransactionsList() {
                 <td>{transaction.amount}</td>
                 <td>{transaction.date}</td>
                 <td>
-                  <button>Delete</button>
+                  <button
+                    onClick={() => handleDeleteTransaction(transaction.id)}
+                  >
+                    Delete {transaction.id}
+                  </button>
                 </td>
               </tr>
             ))}

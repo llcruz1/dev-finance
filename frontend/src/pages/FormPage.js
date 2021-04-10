@@ -1,7 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { updateTransaction, selectTransactionById } from "../transactionsSlice";
+import {
+  updateTransaction,
+  addTransaction,
+  selectTransactionById,
+} from "../transactionsSlice";
 
 function FormPage({ match, history }) {
   const dispatch = useDispatch();
@@ -10,7 +14,11 @@ function FormPage({ match, history }) {
   const transaction = useSelector((state) => selectTransactionById(state, id));
 
   function onSubmit(FormData) {
-    dispatch(updateTransaction({ ...FormData, id: transaction.id }));
+    if (transaction) {
+      dispatch(updateTransaction({ ...FormData, id: transaction.id }));
+    } else {
+      dispatch(addTransaction(FormData));
+    }
     history.push("/");
   }
 
@@ -22,7 +30,7 @@ function FormPage({ match, history }) {
           <input
             type="text"
             placeholder="Description"
-            defaultValue={transaction.description}
+            defaultValue={transaction ? transaction.description : ""}
             {...register("description")}
           />
         </div>
@@ -32,7 +40,7 @@ function FormPage({ match, history }) {
           <input
             type="number"
             placeholder="Amount"
-            defaultValue={transaction.amount}
+            defaultValue={transaction ? transaction.amount : 0}
             {...register("amount")}
           />
         </div>
@@ -42,7 +50,7 @@ function FormPage({ match, history }) {
           <input
             type="text"
             placeholder="Date"
-            defaultValue={transaction.date}
+            defaultValue={transaction ? transaction.date : ""}
             {...register("date")}
           />
         </div>

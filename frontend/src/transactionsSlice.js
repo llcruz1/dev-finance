@@ -5,9 +5,15 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const transactionsAdapter = createEntityAdapter({
-  //selectId: (transaction) => transaction.id,
-});
+const transactionsAdapter = createEntityAdapter({});
+
+export const addTransaction = createAsyncThunk(
+  "transactions/addTransaction",
+  async (transaction) => {
+    const response = await axios.post(`/transactions`, transaction);
+    return response.data;
+  }
+);
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
@@ -28,6 +34,14 @@ export const updateTransaction = createAsyncThunk(
   }
 );
 
+export const deleteTransaction = createAsyncThunk(
+  "transactions/deleteTransaction",
+  async (id) => {
+    const response = await axios.delete(`/transactions/${id}`);
+    return response.data;
+  }
+);
+
 export const transactionsSlice = createSlice({
   name: "transactions",
   initialState: transactionsAdapter.getInitialState({
@@ -36,6 +50,13 @@ export const transactionsSlice = createSlice({
   }),
   reducers: {},
   extraReducers: {
+    [addTransaction.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [addTransaction.fulfilled]: (state, action) => {
+      state.status = "saved";
+      transactionsAdapter.addOne(state, action.payload);
+    },
     [getTransactions.pending]: (state, action) => {
       state.status = "loading";
     },
@@ -53,6 +74,13 @@ export const transactionsSlice = createSlice({
     [updateTransaction.fulfilled]: (state, action) => {
       state.status = "saved";
       transactionsAdapter.upsertOne(state, action.payload);
+    },
+    [deleteTransaction.pending]: (state, action) => {
+      state.status = "loading";
+    },
+    [deleteTransaction.fulfilled]: (state, action) => {
+      state.status = "deleted";
+      transactionsAdapter.removeOne(state, action.payload);
     },
   },
 });
