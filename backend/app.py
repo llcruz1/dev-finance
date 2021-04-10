@@ -13,4 +13,5 @@ app.config['MONGODB_SETTINGS'] = {
 }
 
 db = MongoEngine(app)
+
 app.register_blueprint(transactions)

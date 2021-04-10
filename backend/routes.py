@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from models import Transaction
+from serializers import transaction_serializer
 
 transactions = Blueprint('transactions', __name__)
 
 @transactions.route('/transactions', methods=['GET'])
 def getTransactions():
-    transactions = Transaction.objects().to_json()
-    return transactions
+    transactions = Transaction.objects()
+    return jsonify(transaction_serializer.dump(transactions, many=True))
 
 @transactions.route('/transactions', methods=['POST'])
 def createTransaction():
@@ -22,7 +23,7 @@ def createTransaction():
 @transactions.route('/transaction/<id>', methods=['GET'])
 def getTransaction(id):
     transaction = Transaction.objects.get(id=id)
-    return jsonify(transaction)
+    return transaction_serializer.dump(transaction)
 
 @transactions.route('/transactions/<id>', methods=['DELETE'])
 def deleteTransaction(id):
@@ -33,6 +34,6 @@ def deleteTransaction(id):
 @transactions.route('/transactions/<id>', methods=['PUT'])
 def updateTransaction(id):
     body = request.get_json()
-    transaction = Transaction.objects.get(id=id).to_json()
+    transaction = Transaction.objects.get(id=id)
     transaction.update(**body)
     return str(transaction.id)
