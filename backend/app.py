@@ -12,6 +12,5 @@ app.config['MONGODB_SETTINGS'] = {
     "db": "dev_finance",
 }
 
-db = MongoEngine(app)
-
+initialize_db(app)
 app.register_blueprint(transactions)
