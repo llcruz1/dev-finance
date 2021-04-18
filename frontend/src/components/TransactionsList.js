@@ -27,6 +27,10 @@ function TransactionsList() {
 
   return (
     <div>
+      <h1>My Transactions</h1>
+      <button>
+        <Link to={"/add"}>Add Transaction</Link>
+      </button>
       <table>
         <thead>
           <tr>
@@ -50,20 +54,20 @@ function TransactionsList() {
           </tbody>
         ) : (
           <tbody>
-            {transactions.map((transaction) => (
-              <tr key={transaction.id}>
+            {transactions.map((transaction, index) => (
+              <tr key={index}>
                 <td>
                   <Link to={`/edit/${transaction.id}`}>
                     {transaction.description}
                   </Link>
                 </td>
                 <td>{transaction.amount}</td>
-                <td>{transaction.date}</td>
+                <td>{new Date(transaction.date).toLocaleDateString()}</td>
                 <td>
                   <button
                     onClick={() => handleDeleteTransaction(transaction.id)}
                   >
-                    Delete {transaction.id}
+                    Delete
                   </button>
                 </td>
               </tr>

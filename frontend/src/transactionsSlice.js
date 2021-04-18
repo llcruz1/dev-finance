@@ -10,7 +10,7 @@ const transactionsAdapter = createEntityAdapter({});
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
   async (transaction) => {
-    const response = await axios.post(`/transactions`, transaction);
+    const response = await axios.post(`api/transactions`, transaction);
     return response.data;
   }
 );
@@ -18,7 +18,7 @@ export const addTransaction = createAsyncThunk(
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async () => {
-    const response = await axios.get("/transactions");
+    const response = await axios.get("api/transactions");
     return response.data;
   }
 );
@@ -27,7 +27,7 @@ export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
   async (transaction) => {
     const response = await axios.put(
-      `/transactions/${transaction.id}`,
+      `api/transaction/${transaction.id}`,
       transaction
     );
     return response.data;
@@ -37,7 +37,7 @@ export const updateTransaction = createAsyncThunk(
 export const deleteTransaction = createAsyncThunk(
   "transactions/deleteTransaction",
   async (id) => {
-    const response = await axios.delete(`/transactions/${id}`);
+    const response = await axios.delete(`api/transaction/${id}`);
     return response.data;
   }
 );

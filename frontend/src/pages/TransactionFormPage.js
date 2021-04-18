@@ -48,9 +48,9 @@ function FormPage({ match, history }) {
         <div>
           <label>Date: </label>
           <input
-            type="text"
+            type="date"
             placeholder="Date"
-            defaultValue={transaction ? transaction.date : ""}
+            defaultValue={transaction ? transaction.date.substring(0, 10) : ""}
             {...register("date")}
           />
         </div>
