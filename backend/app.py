@@ -2,15 +2,16 @@ from flask import Flask, request, jsonify
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from db import initialize_db
-from routes import transactions
+from flask_restful import Api
+from urls.transaction_urls import initialize_urls
 
 app = Flask(__name__)
-
 CORS(app)
+api = Api(app)
 
 app.config['MONGODB_SETTINGS'] = {
     "db": "dev_finance",
 }
 
 initialize_db(app)
-app.register_blueprint(transactions)
+initialize_urls(api)
