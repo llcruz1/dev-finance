@@ -1,14 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import TransactionsList from "../components/TransactionsList";
-import StockList from "../components/StockList";
+import EquitiesList from "../components/EquitiesList";
 
 function HomePage() {
   return (
     <div>
       <Link to="/login">Logout</Link>
-      <TransactionsList />
-      <StockList />
+      <EquitiesList />
     </div>
   );
 }

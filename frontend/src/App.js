@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-import TransactionFormPage from "./pages/TransactionFormPage";
+import EquityFormPage from "./pages/EquityFormPage";
 
 function App() {
   return (
@@ -9,8 +9,8 @@ function App() {
       <Router>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/add" component={TransactionFormPage} />
-        <Route exact path="/edit/:id" component={TransactionFormPage} />
+        <Route exact path="/add" component={EquityFormPage} />
+        <Route exact path="/edit/:id" component={EquityFormPage} />
       </Router>
     </>
   );

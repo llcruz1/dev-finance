@@ -3,7 +3,7 @@ from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from db import initialize_db
 from flask_restful import Api
-from urls.transaction_urls import initialize_urls
+from urls.equity_urls import initialize_urls
 
 app = Flask(__name__)
 CORS(app)
