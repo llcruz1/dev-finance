@@ -34,10 +34,13 @@ function EquitiesList() {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Average Price</th>
-            <th>Current Price</th>
-            <th>Operation Date</th>
+            <th>Data da Operação</th>
+            <th>País</th>
+            <th>Ticker</th>
+            <th>Tipo</th>
+            <th>Preço Médio</th>
+            <th>Preço Atual</th>
+            <th>Rentabilidade</th>
             <th>Total: {count} equities</th>
           </tr>
         </thead>
@@ -57,12 +60,15 @@ function EquitiesList() {
           <tbody>
             {equities.map((equity, index) => (
               <tr key={index}>
+                <td>{new Date(equity.operationDate).toLocaleDateString()}</td>
+                <td>{equity.index}</td>
                 <td>
-                  <Link to={`/edit/${equity.id}`}>{equity.name}</Link>
+                  <Link to={`/edit/${equity.id}`}>{equity.ticker}</Link>
                 </td>
+                <td>{equity.equityType}</td>
                 <td>{equity.averagePrice}</td>
                 <td>{equity.currentPrice}</td>
-                <td>{new Date(equity.operationDate).toLocaleDateString()}</td>
+                <td>{equity.currentPrice - equity.averagePrice}</td>
                 <td>
                   <button onClick={() => handleDeleteEquity(equity.id)}>
                     Delete

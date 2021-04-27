@@ -22,36 +22,86 @@ function FormPage({ match, history }) {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label>Name: </label>
+          <label>País: </label>
           <input
             type="text"
-            placeholder="Name"
+            placeholder="País"
+            defaultValue={equity ? equity.index : ""}
+            {...register("index")}
+          />
+        </div>
+
+        <div>
+          <label>Ticker: </label>
+          <input
+            type="text"
+            placeholder="Ticker"
+            defaultValue={equity ? equity.ticker : ""}
+            {...register("ticker")}
+          />
+        </div>
+
+        <div>
+          <label>Nome: </label>
+          <input
+            type="text"
+            placeholder="Nome"
             defaultValue={equity ? equity.name : ""}
             {...register("name")}
           />
         </div>
 
         <div>
-          <label>Average Price: </label>
+          <label>Tipo: </label>
+          <input
+            type="text"
+            placeholder="Tipo"
+            defaultValue={equity ? equity.equityType : ""}
+            {...register("equityType")}
+          />
+        </div>
+
+        <div>
+          <label>Grupo: </label>
+          <input
+            type="text"
+            placeholder="Grupo"
+            defaultValue={equity ? equity.groupName : ""}
+            {...register("groupName")}
+          />
+        </div>
+
+        <div>
+          <label>Quantidade: </label>
+          <input
+            type="text"
+            placeholder="Quantidade"
+            defaultValue={equity ? equity.qty : ""}
+            {...register("qty")}
+          />
+        </div>
+
+        <div>
+          <label>Preço Médio: </label>
           <input
             type="number"
             step="0.01"
-            placeholder="Average Price"
+            placeholder="Preço Médio"
             defaultValue={equity ? equity.averagePrice : 0}
             {...register("averagePrice")}
           />
         </div>
 
         <div>
-          <label>Operation Date: </label>
+          <label>Data da Operação: </label>
           <input
             type="date"
-            placeholder="Operation Date"
+            placeholder="Data da Operação"
             defaultValue={equity ? equity.operationDate.substring(0, 10) : ""}
             {...register("operationDate")}
           />
         </div>
-        <button type="submit">Save</button>
+        <button type="submit">Salvar</button>
       </form>
     </div>
   );

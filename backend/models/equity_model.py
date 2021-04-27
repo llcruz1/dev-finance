@@ -2,8 +2,13 @@ from db import db
 import datetime
 
 class Equity(db.Document):
-    name = db.StringField(max_length=200, required=True)
-    averagePrice = db.FloatField(max_digits=11, decimal_places=2)
-    operationDate = db.DateTimeField(default=datetime.datetime.utcnow)
-    currentPrice = db.FloatField(max_digits=11, decimal_places=2, editable=False)
+    ticker          = db.StringField(max_length=10, required=True)
+    name            = db.StringField(max_length=80, required=True)
+    index           = db.StringField(max_length=50, required=True)
+    groupName       = db.StringField(max_length=50, required=True)
+    equityType      = db.StringField(max_length=50, required=True)
+    qty             = db.FloatField(max_digits=11, decimal_places=2)
+    averagePrice    = db.FloatField(max_digits=11, decimal_places=2)
+    operationDate   = db.DateTimeField(default=datetime.datetime.utcnow)
+    currentPrice    = db.FloatField(max_digits=11, decimal_places=2, editable=False)
 
