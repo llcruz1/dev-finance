@@ -9,29 +9,10 @@ import json
         
 class EquitiesViews(Resource):
     def get(self):
-
         equities = Equity.objects()
-        
-        if len(equities) > 0:
-            #map gera uma lista com os nomes dos ativos
-            #reduce pega a lista gerada e converte em string no formato: ticker1+' '+ticker2+' '+tickerN
-            symbols  = reduce(lambda x,y : x+' '+y, map(lambda x : x.ticker, equities))
-
-            if len(equities) == 1:
-                tickers = yf.Ticker(symbols)    
-            else:
-                tickers = yf.Tickers(symbols)
-            
+        if (equities):
             for equity in equities:
-                todays_data = tickers.history(period='1d')
-
-                if len(equities) == 1:
-                    currentPrice = round(todays_data['Close'][0], 2)
-                else:
-                    currentPrice = round(todays_data['Close'][equity.ticker], 2)
-
-                equity.currentPrice = currentPrice
-
+                equity.currentPrice = getCurrentPrice(equity.ticker, equity.index)
         return jsonify(equity_serializer.dump(equities, many=True))
 
     def post(self):
@@ -42,6 +23,7 @@ class EquitiesViews(Resource):
 class EquityViews(Resource):
     def get(self, id):
         equity = Equity.objects.get(id=id)
+        equity.currentPrice = getCurrentPrice(equity.ticker, equity.index)
         return equity_serializer.dump(equity)
 
     def delete(self, id):
@@ -56,3 +38,59 @@ class EquityViews(Resource):
         return str(equity.id)
     
 
+def getCurrentPrice(symbol, index):
+    if (index == "B3"):
+        symbol += ".SA"
+
+    ticker      = yf.Ticker(symbol)
+    todays_data = ticker.history(period='1d')
+    
+    return round(todays_data['Close'][0], 2)
+
+
+#Insert e Delete Transaction
+def updateEquityFromTransaction(transaction, dbTransactionType):
+    try:
+        ticker  = transaction['ticker']
+        qty     = transaction['qty']
+        price   = transaction['price']
+        
+        if (dbTransactionType == "Delete"):
+            qty *= -1
+
+        equity  = Equity.objects.all().filter(ticker=ticker)
+        
+        if (equity):
+            #Update qty e averagePrice 
+            qtyEquity     = equity[0].qty
+            priceEquity   = equity[0].averagePrice
+
+            operationType = transaction['operationType']
+            
+            if (operationType == "C"):
+                price = ((qtyEquity * priceEquity) + (price * qty)) / (qtyEquity + qty)
+                qty   = qtyEquity + qty
+            elif (operationType == "V"):
+                price = priceEquity
+                qty   = qtyEquity - qty
+            
+            equity.update(qty=qty,averagePrice=price)
+            
+        elif (dbTransactionType == "Insert"):
+            #Insert EQUITY
+            body = {
+                "broker": "Clear",
+                "ticker": ticker,
+                "name": "Nome da Acao",
+                "index": "B3",
+                "groupName": "Ações Brasileiras",
+                "equityType": "Ação",
+                "qty": qty,
+                "averagePrice": price
+            }
+            equity = Equity(**body).save()
+
+        return 1
+
+    except:
+        return -1
