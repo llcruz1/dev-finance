@@ -4,6 +4,8 @@ import {
   createEntityAdapter,
 } from "@reduxjs/toolkit";
 import axios from "axios";
+import { format, parseISO } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 
 const transactionsAdapter = createEntityAdapter({});
 
@@ -25,10 +27,16 @@ export const getTransactions = createAsyncThunk(
         id: transaction.id,
         ticker: transaction.ticker,
         operationType: transaction.operationType,
-        operationDate: new Date(transaction.operationDate).toLocaleDateString(),
+        operationDate: format(
+          parseISO(transaction.operationDate),
+          "dd/MM/yyyy",
+          {
+            locale: ptBR,
+          }
+        ),
         qty: transaction.qty,
-        price: transaction.price,
-        taxes: transaction.taxes,
+        price: transaction.price.toFixed(2),
+        taxes: transaction.taxes.toFixed(2),
       };
     });
 

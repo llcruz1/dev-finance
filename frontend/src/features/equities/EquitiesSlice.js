@@ -18,8 +18,23 @@ export const addEquity = createAsyncThunk(
 export const getEquities = createAsyncThunk(
   "equities/getEquities",
   async () => {
-    const response = await axios.get("api/equities");
-    return response.data;
+    const { data } = await axios.get("api/equities");
+
+    const equities = data.map((equity) => {
+      return {
+        id: equity.id,
+        averagePrice: equity.averagePrice.toFixed(2),
+        currentPrice: equity.currentPrice.toFixed(2),
+        equityType: equity.equityType,
+        groupName: equity.groupName,
+        index: equity.index,
+        name: equity.name,
+        qty: equity.qty,
+        ticker: equity.ticker,
+      };
+    });
+
+    return equities;
   }
 );
 
