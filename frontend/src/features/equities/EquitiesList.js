@@ -6,7 +6,7 @@ import {
   deleteEquity,
   selectAllEquities,
   selectTotalEquities,
-} from "../equitiesSlice";
+} from "./EquitiesSlice";
 
 function EquitiesList() {
   const dispatch = useDispatch();
@@ -15,11 +15,19 @@ function EquitiesList() {
   const error = useSelector((state) => state.equities.error);
   const count = useSelector(selectTotalEquities);
 
+  const statusTransactions = useSelector((state) => state.transactions.status);
+
   useEffect(() => {
     if (status === "idle" || status === "saved" || status === "deleted") {
       dispatch(getEquities());
     }
   }, [status, dispatch]);
+
+  useEffect(() => {
+    if (statusTransactions === "saved" || statusTransactions === "deleted") {
+      dispatch(getEquities());
+    }
+  }, [statusTransactions, dispatch]);
 
   function handleDeleteEquity(id) {
     dispatch(deleteEquity(id));
@@ -27,17 +35,14 @@ function EquitiesList() {
 
   return (
     <div>
-      <h1>My Equities</h1>
-      <button>
-        <Link to={"/add"}>Add Equity</Link>
-      </button>
+      <h1>Meus Ativos</h1>
+
       <table>
         <thead>
           <tr>
-            <th>Data da Operação</th>
-            <th>País</th>
             <th>Ticker</th>
             <th>Tipo</th>
+            <th>Quantidade</th>
             <th>Preço Médio</th>
             <th>Preço Atual</th>
             <th>Rentabilidade</th>
@@ -60,15 +65,21 @@ function EquitiesList() {
           <tbody>
             {equities.map((equity, index) => (
               <tr key={index}>
-                <td>{new Date(equity.operationDate).toLocaleDateString()}</td>
-                <td>{equity.index}</td>
                 <td>
-                  <Link to={`/edit/${equity.id}`}>{equity.ticker}</Link>
+                  <Link to={`/editEquity/${equity.id}`}>{equity.ticker}</Link>
                 </td>
                 <td>{equity.equityType}</td>
+                <td>{equity.qty}</td>
                 <td>{equity.averagePrice}</td>
                 <td>{equity.currentPrice}</td>
-                <td>{equity.currentPrice - equity.averagePrice}</td>
+                <td>
+                  {(
+                    ((equity.currentPrice - equity.averagePrice) /
+                      equity.currentPrice) *
+                    100
+                  ).toFixed(2)}{" "}
+                  %
+                </td>
                 <td>
                   <button onClick={() => handleDeleteEquity(equity.id)}>
                     Delete

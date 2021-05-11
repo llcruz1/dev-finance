@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { updateEquity, addEquity, selectEquityById } from "../equitiesSlice";
+import { updateEquity, addEquity, selectEquityById } from "./EquitiesSlice";
 
-function FormPage({ match, history }) {
+function EquityForm({ match, history }) {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const id = match.params.id;
@@ -22,12 +22,22 @@ function FormPage({ match, history }) {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label>País: </label>
+          <label>Bolsa: </label>
           <input
             type="text"
-            placeholder="País"
+            placeholder="Bolsa"
             defaultValue={equity ? equity.index : ""}
             {...register("index")}
+          />
+        </div>
+
+        <div>
+          <label>Corretora: </label>
+          <input
+            type="text"
+            placeholder="Corretora"
+            defaultValue={equity ? equity.broker : ""}
+            {...register("broker")}
           />
         </div>
 
@@ -92,19 +102,10 @@ function FormPage({ match, history }) {
           />
         </div>
 
-        <div>
-          <label>Data da Operação: </label>
-          <input
-            type="date"
-            placeholder="Data da Operação"
-            defaultValue={equity ? equity.operationDate.substring(0, 10) : ""}
-            {...register("operationDate")}
-          />
-        </div>
         <button type="submit">Salvar</button>
       </form>
     </div>
   );
 }
 
-export default FormPage;
+export default EquityForm;

@@ -42,41 +42,55 @@ def getCurrentPrice(symbol, index):
     if (index == "B3"):
         symbol += ".SA"
 
-    ticker      = yf.Ticker(symbol)
-    todays_data = ticker.history(period='1d')
+    try:
+        ticker       = yf.Ticker(symbol)
+        todays_data  = ticker.history(period='1d')
     
-    return round(todays_data['Close'][0], 2)
+        currentPrice = round(todays_data['Close'][0], 2)
+
+    except:
+        currentPrice = 0
+
+    return currentPrice
 
 
 #Insert e Delete Transaction
 def updateEquityFromTransaction(transaction, dbTransactionType):
     try:
+        operationType = transaction['operationType']
         ticker  = transaction['ticker']
-        qty     = transaction['qty']
-        price   = transaction['price']
+        qty     = float(transaction['qty'])
+        price   = float(transaction['price'])
         
-        if (dbTransactionType == "Delete"):
+        if (dbTransactionType == "DEL"):
             qty *= -1
 
         equity  = Equity.objects.all().filter(ticker=ticker)
-        
+
         if (equity):
             #Update qty e averagePrice 
-            qtyEquity     = equity[0].qty
-            priceEquity   = equity[0].averagePrice
+            qtyEquity     = float(equity[0].qty)
+            priceEquity   = float(equity[0].averagePrice)
 
-            operationType = transaction['operationType']
-            
+            print(ticker,qty,price,qtyEquity,priceEquity)
+
+
             if (operationType == "C"):
-                price = ((qtyEquity * priceEquity) + (price * qty)) / (qtyEquity + qty)
-                qty   = qtyEquity + qty
+                if(qtyEquity + qty) == 0:
+                    price = 0
+                    qty   = 0
+                else:
+                    price = round(((qtyEquity * priceEquity) + (price * qty)) / (qtyEquity + qty), 2)
+                    qty   = qtyEquity + qty
+
             elif (operationType == "V"):
                 price = priceEquity
                 qty   = qtyEquity - qty
-            
+
             equity.update(qty=qty,averagePrice=price)
+            res = {'id': str(equity[0].id), 'error': ''}
             
-        elif (dbTransactionType == "Insert"):
+        elif (dbTransactionType == "INS") and operationType == "C":
             #Insert EQUITY
             body = {
                 "broker": "Clear",
@@ -89,8 +103,12 @@ def updateEquityFromTransaction(transaction, dbTransactionType):
                 "averagePrice": price
             }
             equity = Equity(**body).save()
+            res = {'id': str(equity.id), 'error': ''}
 
-        return 1
+        else:
+            res = {'id': '-1', 'error': 'Ticker '+ticker+' não encontrado.'}
 
-    except:
-        return -1
+    except Exception as error:
+        res = {'id': '-1', 'error': str(error)}
+
+    return res

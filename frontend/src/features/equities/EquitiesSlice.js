@@ -45,7 +45,11 @@ export const equitiesSlice = createSlice({
     status: "idle",
     error: null,
   }),
-  reducers: {},
+  reducers: {
+    setStatus: (state, action) => {
+      state.status = action.payload;
+    },
+  },
   extraReducers: {
     [addEquity.pending]: (state, action) => {
       state.status = "loading";

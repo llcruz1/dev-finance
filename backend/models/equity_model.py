@@ -8,7 +8,7 @@ class Equity(db.Document):
     index           = db.StringField(max_length=50, required=True)
     groupName       = db.StringField(max_length=50, required=True)
     equityType      = db.StringField(max_length=50, required=True)
-    qty             = db.FloatField(max_digits=11, decimal_places=2)
-    averagePrice    = db.FloatField(max_digits=11, decimal_places=2)
-    currentPrice    = db.FloatField(max_digits=11, decimal_places=2, editable=False)
+    qty             = db.FloatField(max_digits=14, decimal_places=6)
+    averagePrice    = db.FloatField(max_digits=14, decimal_places=6)
+    currentPrice    = db.FloatField(max_digits=14, decimal_places=6, editable=False)
 

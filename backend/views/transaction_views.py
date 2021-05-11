@@ -16,21 +16,20 @@ class TransactionsViews(Resource):
         return jsonify(transaction_serializer.dump(transactions, many=True))
 
     def post(self):
-        body = request.get_json()
-        
+        body  = request.get_json()
+
         try:
-            returnUpdate = updateEquityFromTransaction(body, "Insert")
-
-            if (returnUpdate > 0): 
-                transaction = Transaction(**body).save()
-                id = str(transaction.id)
+            returnUpdate = updateEquityFromTransaction(body, "INS")
+            if (returnUpdate['id'] == '-1'): 
+                res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
             else:
-                id = '-1'
-
-            return jsonify(id)
-
-        except:
-            return jsonify('-1')
+                transaction = Transaction(**body).save()
+                res = {'id': str(transaction.id), 'error': ''}
+        except Exception as error: 
+            res = {'id': '-1', 'error': str(error)}
+        
+        print(res)
+        return res
 
 
 class TransactionViews(Resource):
@@ -39,44 +38,42 @@ class TransactionViews(Resource):
         return transaction_serializer.dump(transaction)
 
     def delete(self, id):
-        transaction = Transaction.objects.get(id=id)
+        try:
+            transaction = Transaction.objects.get(id=id)
         
-        try:
             #Update EQUITY (qty, averagePrice)
-            returnUpdate = updateEquityFromTransaction(transaction, "Delete")
-
-            if (returnUpdate > 0): 
+            returnUpdate = updateEquityFromTransaction(transaction, "DEL")
+            if (returnUpdate['id'] == '-1'): 
+               res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
+            else:
                 transaction.delete()
-                id = str(transaction.id)
-            else:
-                id = '-1'
+                res = {'id': str(transaction.id), 'error': ''}
+        except Exception as error: 
+            res = {'id': '-1', 'error': str(error)}
 
-            return jsonify(id)
+        print(res)
+        return res
 
-        except:
-            return jsonify('-1')
 
-    
     def put(self, id):
-        body = request.get_json()
-        transaction = Transaction.objects.get(id=id)
-
         try:
+            body = request.get_json()
+            transaction = Transaction.objects.get(id=id)
+
             #Update EQUITY (qty, averagePrice)
-            returnUpdate = updateEquityFromTransaction(transaction, "Delete")
-
-            if (returnUpdate > 0): 
-                returnUpdate = updateEquityFromTransaction(body, "Insert")
-
-            if (returnUpdate > 0): 
-                transaction.update(**body)
-                id = str(transaction.id)
+            returnUpdate = updateEquityFromTransaction(transaction, "DEL")
+            if (returnUpdate['id'] == '-1'): 
+                res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
             else:
-                id = '-1'
-
-            return jsonify(id)
-
-        except:
-            return jsonify('-1')
- 
+                returnUpdate = updateEquityFromTransaction(body, "INS")
+                if (returnUpdate['id'] == '-1'): 
+                    res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
+                else:
+                    transaction.update(**body)
+                    res = {'id': str(transaction.id), 'error': ''}
+        except Exception as error: 
+            res = {'id': '-1', 'error': str(error)}
+        
+        print(res)
+        return res
 
