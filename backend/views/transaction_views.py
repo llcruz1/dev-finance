@@ -2,12 +2,12 @@ from functools import reduce
 from flask import Response, request, jsonify
 from models.transaction_model import Transaction
 from models.equity_model import Equity
-from views.equity_views import updateEquityFromTransaction
 from serializers.transaction_serializer import transaction_serializer
 from flask_restful import Resource
 import requests
 import yfinance as yf
 import json
+from utils.updateEquityFromTransaction import updateEquityFromTransaction
         
 class TransactionsViews(Resource):
     def get(self):
@@ -28,11 +28,10 @@ class TransactionsViews(Resource):
         except Exception as error: 
             res = {'id': '-1', 'error': str(error)}
         
-        print(res)
         return res
 
 
-class TransactionViews(Resource):
+class TransactionByIDViews(Resource):
     def get(self, id):
         transaction = Transaction.objects.get(id=id)
         return transaction_serializer.dump(transaction)
@@ -51,7 +50,6 @@ class TransactionViews(Resource):
         except Exception as error: 
             res = {'id': '-1', 'error': str(error)}
 
-        print(res)
         return res
 
 
@@ -74,6 +72,5 @@ class TransactionViews(Resource):
         except Exception as error: 
             res = {'id': '-1', 'error': str(error)}
         
-        print(res)
         return res
 
