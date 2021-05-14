@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import HomePage from "./pages/HomePage";
-import EquityForm from "./features/equities/EquityForm";
-import TransactionsList from "./features/transactions/TransactionsList";
-import TransactionForm from "./features/transactions/TransactionForm";
+import LoginPage from "../pages/LoginPage";
+import HomePage from "../pages/HomePage";
+import EquityForm from "../features/equities/EquityForm";
+import TransactionsList from "../features/transactions/TransactionsList";
+import TransactionForm from "../features/transactions/TransactionForm";
 
 function App() {
   return (

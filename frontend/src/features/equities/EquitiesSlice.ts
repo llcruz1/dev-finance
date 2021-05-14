@@ -2,14 +2,42 @@ import {
   createSlice,
   createAsyncThunk,
   createEntityAdapter,
+  EntityState,
 } from "@reduxjs/toolkit";
+import type { RootState } from "../../app/store";
 import axios from "axios";
 
-const equitiesAdapter = createEntityAdapter({});
+// Types
+interface Equity {
+  id: string;
+  averagePrice: number;
+  currentPrice: number;
+  equityType: string;
+  groupName: string;
+  index: string;
+  broker: string;
+  name: string;
+  qty: number;
+  ticker: string;
+}
 
+interface EquityState extends EntityState<Equity> {
+  status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted";
+  error: any;
+}
+
+// Entity Adapter and initial state
+const equitiesAdapter = createEntityAdapter<Equity>({});
+
+const initialState: EquityState = equitiesAdapter.getInitialState({
+  status: "idle",
+  error: null,
+});
+
+// API calls
 export const addEquity = createAsyncThunk(
   "equities/addEquity",
-  async (equity) => {
+  async (equity: Equity) => {
     const response = await axios.post(`api/equities`, equity);
     return response.data;
   }
@@ -20,7 +48,7 @@ export const getEquities = createAsyncThunk(
   async () => {
     const { data } = await axios.get("api/equities");
 
-    const equities = data.map((equity) => {
+    const equities = data.map((equity: Equity) => {
       return {
         id: equity.id,
         averagePrice: equity.averagePrice.toFixed(2),
@@ -28,6 +56,7 @@ export const getEquities = createAsyncThunk(
         equityType: equity.equityType,
         groupName: equity.groupName,
         index: equity.index,
+        broker: equity.broker,
         name: equity.name,
         qty: equity.qty,
         ticker: equity.ticker,
@@ -40,7 +69,7 @@ export const getEquities = createAsyncThunk(
 
 export const updateEquity = createAsyncThunk(
   "equities/updateEquity",
-  async (equity) => {
+  async (equity: Equity) => {
     const response = await axios.put(`api/equity/${equity.id}`, equity);
     return response.data;
   }
@@ -48,65 +77,60 @@ export const updateEquity = createAsyncThunk(
 
 export const deleteEquity = createAsyncThunk(
   "equities/deleteEquity",
-  async (id) => {
+  async (id: String) => {
     const response = await axios.delete(`api/equity/${id}`);
     return response.data;
   }
 );
 
+// Slice logic
 export const equitiesSlice = createSlice({
   name: "equities",
-  initialState: equitiesAdapter.getInitialState({
-    status: "idle",
-    error: null,
-  }),
-  reducers: {
-    setStatus: (state, action) => {
-      state.status = action.payload;
-    },
-  },
-  extraReducers: {
-    [addEquity.pending]: (state, action) => {
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(addEquity.pending, (state, action) => {
       state.status = "loading";
-    },
-    [addEquity.fulfilled]: (state, action) => {
+    });
+    builder.addCase(addEquity.fulfilled, (state, action) => {
       state.status = "saved";
       equitiesAdapter.addOne(state, action.payload);
-    },
-    [getEquities.pending]: (state, action) => {
+    });
+    builder.addCase(getEquities.pending, (state, action) => {
       state.status = "loading";
-    },
-    [getEquities.fulfilled]: (state, action) => {
+    });
+    builder.addCase(getEquities.fulfilled, (state, action) => {
       state.status = "loaded";
       equitiesAdapter.setAll(state, action.payload);
-    },
-    [getEquities.rejected]: (state, action) => {
+    });
+    builder.addCase(getEquities.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
-    },
-    [updateEquity.pending]: (state, action) => {
+    });
+    builder.addCase(updateEquity.pending, (state, action) => {
       state.status = "loading";
-    },
-    [updateEquity.fulfilled]: (state, action) => {
+    });
+    builder.addCase(updateEquity.fulfilled, (state, action) => {
       state.status = "saved";
       equitiesAdapter.upsertOne(state, action.payload);
-    },
-    [deleteEquity.pending]: (state, action) => {
+    });
+    builder.addCase(deleteEquity.pending, (state, action) => {
       state.status = "loading";
-    },
-    [deleteEquity.fulfilled]: (state, action) => {
+    });
+    builder.addCase(deleteEquity.fulfilled, (state, action) => {
       state.status = "deleted";
       equitiesAdapter.removeOne(state, action.payload);
-    },
+    });
   },
 });
 
+// Selectors
 export const {
   selectAll: selectAllEquities,
   selectById: selectEquityById,
   selectIds: selectEquitiesIds,
   selectEntities: selectEquityEntities,
   selectTotal: selectTotalEquities,
-} = equitiesAdapter.getSelectors((state) => state.equities);
+} = equitiesAdapter.getSelectors<RootState>((state) => state.equities);
 
 export default equitiesSlice.reducer;

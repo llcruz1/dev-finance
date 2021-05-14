@@ -1,15 +1,30 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { updateEquity, addEquity, selectEquityById } from "./EquitiesSlice";
 
-function EquityForm({ match, history }) {
-  const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
-  const id = match.params.id;
-  const equity = useSelector((state) => selectEquityById(state, id));
+interface Equity {
+  id: string;
+  averagePrice: number;
+  currentPrice: number;
+  equityType: string;
+  groupName: string;
+  index: string;
+  broker: string;
+  name: string;
+  qty: number;
+  ticker: string;
+}
 
-  function onSubmit(FormData) {
+function EquityForm() {
+  const dispatch = useAppDispatch();
+  const { register, handleSubmit } = useForm();
+  const history = useHistory();
+  const { id } = useParams<{ id: string }>();
+  const equity = useAppSelector((state) => selectEquityById(state, id));
+
+  function onSubmit(FormData: Equity) {
     if (equity) {
       dispatch(updateEquity({ ...FormData, id: equity.id }));
     } else {

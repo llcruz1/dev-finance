@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Link } from "react-router-dom";
 import {
   getEquities,
@@ -9,13 +9,15 @@ import {
 } from "./EquitiesSlice";
 
 function EquitiesList() {
-  const dispatch = useDispatch();
-  const equities = useSelector(selectAllEquities);
-  const status = useSelector((state) => state.equities.status);
-  const error = useSelector((state) => state.equities.error);
-  const count = useSelector(selectTotalEquities);
+  const dispatch = useAppDispatch();
+  const equities = useAppSelector(selectAllEquities);
+  const status = useAppSelector((state) => state.equities.status);
+  const error = useAppSelector((state) => state.equities.error);
+  const count = useAppSelector(selectTotalEquities);
 
-  const statusTransactions = useSelector((state) => state.transactions.status);
+  const statusTransactions = useAppSelector(
+    (state) => state.transactions.status
+  );
 
   useEffect(() => {
     if (status === "idle" || status === "saved" || status === "deleted") {
@@ -29,7 +31,7 @@ function EquitiesList() {
     }
   }, [statusTransactions, dispatch]);
 
-  function handleDeleteEquity(id) {
+  function handleDeleteEquity(id: string) {
     dispatch(deleteEquity(id));
   }
 

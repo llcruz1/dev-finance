@@ -1,11 +1,18 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-function LoginPage({ match, history }) {
-  const { register, handleSubmit } = useForm();
+interface User {
+  email: string;
+  password: string;
+}
 
-  function onSubmit(FormData) {
+function LoginPage() {
+  const { register, handleSubmit } = useForm();
+  const history = useHistory();
+
+  function onSubmit(FormData: User) {
     console.log(FormData);
     history.push("/");
   }

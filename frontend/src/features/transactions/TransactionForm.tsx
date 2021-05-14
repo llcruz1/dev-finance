@@ -1,5 +1,6 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   updateTransaction,
@@ -7,13 +8,26 @@ import {
   selectTransactionById,
 } from "./TransactionsSlice";
 
-function TransactionForm({ match, history }) {
-  const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
-  const id = match.params.id;
-  const transaction = useSelector((state) => selectTransactionById(state, id));
+interface Transaction {
+  id: string;
+  ticker: string;
+  operationType: string;
+  operationDate: string;
+  qty: number;
+  price: number;
+  taxes: number;
+}
 
-  function onSubmit(FormData) {
+function TransactionForm() {
+  const dispatch = useAppDispatch();
+  const { register, handleSubmit } = useForm();
+  const history = useHistory();
+  const { id } = useParams<{ id: string }>();
+  const transaction = useAppSelector((state) =>
+    selectTransactionById(state, id)
+  );
+
+  function onSubmit(FormData: Transaction) {
     if (transaction) {
       dispatch(updateTransaction({ ...FormData, id: transaction.id }));
     } else {

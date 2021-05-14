@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   getTransactions,
@@ -8,13 +9,13 @@ import {
   selectTotalTransactions,
 } from "./TransactionsSlice";
 
-function TransactionsList({ history }) {
-  const dispatch = useDispatch();
-  //const history = useHistory();
-  const transactions = useSelector(selectAllTransactions);
-  const status = useSelector((state) => state.transactions.status);
-  const error = useSelector((state) => state.transactions.error);
-  const count = useSelector(selectTotalTransactions);
+function TransactionsList() {
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+  const transactions = useAppSelector(selectAllTransactions);
+  const status = useAppSelector((state) => state.transactions.status);
+  const error = useAppSelector((state) => state.transactions.error);
+  const count = useAppSelector(selectTotalTransactions);
 
   useEffect(() => {
     if (status === "idle" || status === "saved" || status === "deleted") {
@@ -22,7 +23,7 @@ function TransactionsList({ history }) {
     }
   }, [status, dispatch]);
 
-  function handleDeleteTransaction(id) {
+  function handleDeleteTransaction(id: string) {
     dispatch(deleteTransaction(id));
     history.push("/");
   }
