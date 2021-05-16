@@ -6,7 +6,7 @@ import {
   updateTransaction,
   addTransaction,
   selectTransactionById,
-} from "./TransactionsSlice";
+} from "./transactionsSlice";
 
 interface Transaction {
   id: string;

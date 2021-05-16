@@ -2,7 +2,7 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { updateEquity, addEquity, selectEquityById } from "./EquitiesSlice";
+import { updateEquity, addEquity, selectEquityById } from "./equitiesSlice";
 
 interface Equity {
   id: string;

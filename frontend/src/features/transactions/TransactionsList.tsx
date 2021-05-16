@@ -7,7 +7,7 @@ import {
   deleteTransaction,
   selectAllTransactions,
   selectTotalTransactions,
-} from "./TransactionsSlice";
+} from "./transactionsSlice";
 
 function TransactionsList() {
   const dispatch = useAppDispatch();

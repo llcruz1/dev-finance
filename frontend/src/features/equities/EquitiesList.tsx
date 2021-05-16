@@ -6,7 +6,7 @@ import {
   deleteEquity,
   selectAllEquities,
   selectTotalEquities,
-} from "./EquitiesSlice";
+} from "./equitiesSlice";
 
 function EquitiesList() {
   const dispatch = useAppDispatch();
