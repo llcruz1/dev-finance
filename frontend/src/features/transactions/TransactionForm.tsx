@@ -1,7 +1,9 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { format, parseISO } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 import {
   updateTransaction,
   addTransaction,
@@ -26,6 +28,23 @@ function TransactionForm() {
   const transaction = useAppSelector((state) =>
     selectTransactionById(state, id)
   );
+
+  const [operationDateAsHtmlFormat, setOperationDateAsHtmlFormat] =
+    useState("");
+
+  useEffect(() => {
+    if (transaction) {
+      setOperationDateAsHtmlFormat(
+        format(
+          parseISO(new Date(transaction.operationDate).toISOString()),
+          "yyyy-MM-dd",
+          {
+            locale: ptBR,
+          }
+        )
+      );
+    }
+  }, [transaction]);
 
   function onSubmit(FormData: Transaction) {
     if (transaction) {
@@ -64,7 +83,7 @@ function TransactionForm() {
           <input
             type="date"
             placeholder="Data da Operação"
-            defaultValue={transaction ? transaction.operationDate : ""}
+            defaultValue={transaction ? operationDateAsHtmlFormat : ""}
             {...register("operationDate")}
           />
         </div>
