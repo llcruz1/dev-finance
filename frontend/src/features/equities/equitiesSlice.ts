@@ -5,7 +5,7 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-import axios from "axios";
+import { api } from "../../services/api";
 
 // Types
 interface Equity {
@@ -38,7 +38,7 @@ const initialState: EquityState = equitiesAdapter.getInitialState({
 export const addEquity = createAsyncThunk(
   "equities/addEquity",
   async (equity: Equity) => {
-    const response = await axios.post(`api/equities`, equity);
+    const response = await api.post(`api/equities`, equity);
     return response.data;
   }
 );
@@ -46,7 +46,7 @@ export const addEquity = createAsyncThunk(
 export const getEquities = createAsyncThunk(
   "equities/getEquities",
   async () => {
-    const { data } = await axios.get("api/equities");
+    const { data } = await api.get("api/equities");
 
     const equities = data.map((equity: Equity) => {
       return {
@@ -59,7 +59,7 @@ export const getEquities = createAsyncThunk(
         broker: equity.broker,
         name: equity.name,
         qty: equity.qty,
-        ticker: equity.ticker,
+        ticker: equity.ticker.toUpperCase(),
       };
     });
 
@@ -70,7 +70,7 @@ export const getEquities = createAsyncThunk(
 export const updateEquity = createAsyncThunk(
   "equities/updateEquity",
   async (equity: Equity) => {
-    const response = await axios.put(`api/equity/${equity.id}`, equity);
+    const response = await api.put(`api/equity/${equity.id}`, equity);
     return response.data;
   }
 );
@@ -78,7 +78,7 @@ export const updateEquity = createAsyncThunk(
 export const deleteEquity = createAsyncThunk(
   "equities/deleteEquity",
   async (id: String) => {
-    const response = await axios.delete(`api/equity/${id}`);
+    const response = await api.delete(`api/equity/${id}`);
     return response.data;
   }
 );

@@ -5,7 +5,7 @@ import {
   EntityState,
 } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-import axios from "axios";
+import { api } from "../../services/api";
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 
@@ -37,7 +37,7 @@ const initialState: TransactionState = transactionsAdapter.getInitialState({
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
   async (transaction: Transaction) => {
-    const response = await axios.post(`api/transactions`, transaction);
+    const response = await api.post(`api/transactions`, transaction);
     return response.data;
   }
 );
@@ -45,7 +45,7 @@ export const addTransaction = createAsyncThunk(
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async () => {
-    const { data } = await axios.get("api/transactions");
+    const { data } = await api.get("api/transactions");
 
     const transactions = data.map((transaction: Transaction) => {
       return {
@@ -72,7 +72,7 @@ export const getTransactions = createAsyncThunk(
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
   async (transaction: Transaction) => {
-    const response = await axios.put(
+    const response = await api.put(
       `api/transaction/${transaction.id}`,
       transaction
     );
@@ -83,7 +83,7 @@ export const updateTransaction = createAsyncThunk(
 export const deleteTransaction = createAsyncThunk(
   "transactions/deleteTransaction",
   async (id: String) => {
-    const response = await axios.delete(`api/transaction/${id}`);
+    const response = await api.delete(`api/transaction/${id}`);
     return response.data;
   }
 );

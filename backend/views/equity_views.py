@@ -1,11 +1,8 @@
 from functools import reduce
-from flask import Response, request, jsonify
+from flask import request, jsonify
 from models.equity_model import Equity
 from serializers.equity_serializer import equity_serializer
 from flask_restful import Resource
-import requests
-import yfinance as yf
-import json
 from utils.getCurrentPrice import getCurrentPrice
         
 class EquitiesViews(Resource):

@@ -66,7 +66,11 @@ function TransactionsList() {
             {transactions.map((transaction, index) => (
               <tr key={index}>
                 <td>{transaction.operationDate}</td>
-                <td>{transaction.ticker}</td>
+                <td>
+                  <Link to={`/editTransaction/${transaction.id}`}>
+                    {transaction.ticker}
+                  </Link>
+                </td>
                 <td>{transaction.operationType}</td>
                 <td>{transaction.qty}</td>
                 <td>{transaction.price}</td>
