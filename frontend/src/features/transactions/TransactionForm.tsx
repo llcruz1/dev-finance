@@ -4,11 +4,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
-import {
-  updateTransaction,
-  addTransaction,
-  selectTransactionById,
-} from "./transactionsSlice";
+import { updateTransaction, addTransaction, selectTransactionById } from "./transactionsSlice";
 
 interface Transaction {
   id: string;
@@ -25,26 +21,7 @@ function TransactionForm() {
   const { register, handleSubmit } = useForm();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
-  const transaction = useAppSelector((state) =>
-    selectTransactionById(state, id)
-  );
-
-  const [operationDateAsHtmlFormat, setOperationDateAsHtmlFormat] =
-    useState("");
-
-  useEffect(() => {
-    if (transaction) {
-      setOperationDateAsHtmlFormat(
-        format(
-          parseISO(new Date(transaction.operationDate).toISOString()),
-          "yyyy-MM-dd",
-          {
-            locale: ptBR,
-          }
-        )
-      );
-    }
-  }, [transaction]);
+  const transaction = useAppSelector((state) => selectTransactionById(state, id));
 
   function onSubmit(FormData: Transaction) {
     if (transaction) {
@@ -83,7 +60,7 @@ function TransactionForm() {
           <input
             type="date"
             placeholder="Data da Operação"
-            defaultValue={transaction ? operationDateAsHtmlFormat : ""}
+            defaultValue={transaction ? transaction.operationDate : ""}
             {...register("operationDate")}
           />
         </div>

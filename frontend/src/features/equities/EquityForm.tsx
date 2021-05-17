@@ -24,6 +24,8 @@ function EquityForm() {
   const { id } = useParams<{ id: string }>();
   const equity = useAppSelector((state) => selectEquityById(state, id));
 
+  // Use redux-persist for maintain state on refresh page.
+
   function onSubmit(FormData: Equity) {
     if (equity) {
       dispatch(updateEquity({ ...FormData, id: equity.id }));

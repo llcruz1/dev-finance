@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Link } from "react-router-dom";
-import {
-  getEquities,
-  deleteEquity,
-  selectAllEquities,
-  selectTotalEquities,
-} from "./equitiesSlice";
+import { getEquities, deleteEquity, selectAllEquities, selectTotalEquities } from "./equitiesSlice";
 
 function EquitiesList() {
   const dispatch = useAppDispatch();
@@ -15,9 +10,7 @@ function EquitiesList() {
   const error = useAppSelector((state) => state.equities.error);
   const count = useAppSelector(selectTotalEquities);
 
-  const statusTransactions = useAppSelector(
-    (state) => state.transactions.status
-  );
+  const statusTransactions = useAppSelector((state) => state.transactions.status);
 
   useEffect(() => {
     if (status === "idle" || status === "saved" || status === "deleted") {
@@ -68,7 +61,7 @@ function EquitiesList() {
             {equities.map((equity, index) => (
               <tr key={index}>
                 <td>
-                  <Link to={`/editEquity/${equity.id}`}>{equity.ticker}</Link>
+                  <Link to={`/transactionsList/${equity.ticker}`}>{equity.ticker}</Link>
                 </td>
                 <td>{equity.equityType}</td>
                 <td>{equity.qty}</td>
@@ -76,16 +69,13 @@ function EquitiesList() {
                 <td>{equity.currentPrice}</td>
                 <td>
                   {(
-                    ((equity.currentPrice - equity.averagePrice) /
-                      equity.currentPrice) *
+                    ((equity.currentPrice - equity.averagePrice) / equity.currentPrice) *
                     100
                   ).toFixed(2)}{" "}
                   %
                 </td>
                 <td>
-                  <button onClick={() => handleDeleteEquity(equity.id)}>
-                    Delete
-                  </button>
+                  <button onClick={() => handleDeleteEquity(equity.id)}>Delete</button>
                 </td>
               </tr>
             ))}

@@ -1,9 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  createEntityAdapter,
-  EntityState,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
 import { format, parseISO } from "date-fns";
@@ -39,45 +34,33 @@ export const addTransaction = createAsyncThunk(
   async (transaction: Transaction) => {
     const response = await api.post(`api/transactions`, transaction);
     return response.data;
-  }
+  },
 );
 
-export const getTransactions = createAsyncThunk(
-  "transactions/getTransactions",
-  async () => {
-    const { data } = await api.get("api/transactions");
+export const getTransactions = createAsyncThunk("transactions/getTransactions", async () => {
+  const { data } = await api.get("api/transactions");
 
-    const transactions = data.map((transaction: Transaction) => {
-      return {
-        id: transaction.id,
-        ticker: transaction.ticker,
-        operationType: transaction.operationType,
-        operationDate: format(
-          parseISO(transaction.operationDate),
-          "dd/MM/yyyy",
-          {
-            locale: ptBR,
-          }
-        ),
-        qty: transaction.qty,
-        price: transaction.price.toFixed(2),
-        taxes: transaction.taxes.toFixed(2),
-      };
-    });
+  const transactions = data.map((transaction: Transaction) => {
+    return {
+      id: transaction.id,
+      ticker: transaction.ticker,
+      operationType: transaction.operationType,
+      operationDate: format(parseISO(transaction.operationDate), "yyyy-MM-dd"),
+      qty: transaction.qty,
+      price: transaction.price.toFixed(2),
+      taxes: transaction.taxes.toFixed(2),
+    };
+  });
 
-    return transactions;
-  }
-);
+  return transactions;
+});
 
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
   async (transaction: Transaction) => {
-    const response = await api.put(
-      `api/transaction/${transaction.id}`,
-      transaction
-    );
+    const response = await api.put(`api/transaction/${transaction.id}`, transaction);
     return response.data;
-  }
+  },
 );
 
 export const deleteTransaction = createAsyncThunk(
@@ -85,7 +68,7 @@ export const deleteTransaction = createAsyncThunk(
   async (id: String) => {
     const response = await api.delete(`api/transaction/${id}`);
     return response.data;
-  }
+  },
 );
 
 // Slice logic
