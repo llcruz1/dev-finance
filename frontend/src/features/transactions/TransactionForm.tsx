@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useParams, useHistory } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
@@ -34,6 +34,11 @@ function TransactionForm() {
 
   return (
     <div>
+      <div>
+        <Link to="/">Voltar</Link>
+        <br />
+        <br />
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Ativo: </label>

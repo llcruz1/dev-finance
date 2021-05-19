@@ -10,11 +10,11 @@ function HomePage() {
       </div>
       <br />
       <button>
-        <Link to={"/addTransaction"}>Nova Transação</Link>
+        <Link to={"/adicionar-transacao"}>Nova Transação</Link>
       </button>
 
       <button>
-        <Link to={"/TransactionsList"}>Extrato</Link>
+        <Link to={"/extrato"}>Extrato</Link>
       </button>
 
       <EquitiesList />

@@ -61,7 +61,7 @@ function EquitiesList() {
             {equities.map((equity, index) => (
               <tr key={index}>
                 <td>
-                  <Link to={`/transactionsList/${equity.ticker}`}>{equity.ticker}</Link>
+                  <Link to={`/extrato/${equity.ticker}`}>{equity.ticker}</Link>
                 </td>
                 <td>{equity.equityType}</td>
                 <td>{equity.qty}</td>

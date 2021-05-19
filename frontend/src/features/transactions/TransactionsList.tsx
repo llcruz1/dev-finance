@@ -15,11 +15,13 @@ interface Transaction {
   taxes: number;
 }
 
-function TransactionsList() {
+interface Props {
+  ticker?: string;
+}
+
+function TransactionsList({ ticker }: Props) {
   const dispatch = useAppDispatch();
   const history = useHistory();
-
-  const { ticker } = useParams<{ ticker: string }>();
 
   const transactions = useAppSelector(selectAllTransactions);
   const equities = useAppSelector(selectAllEquities);
@@ -32,12 +34,14 @@ function TransactionsList() {
 
   useEffect(() => {
     // Fetch transactions
+    console.log(1, ticker, status);
     if (status === "idle" || status === "saved" || status === "deleted") {
       dispatch(getTransactions());
     }
   }, [status, dispatch]);
 
   useEffect(() => {
+    console.log(2, ticker, status);
     // Filter transactions
     if (filteredEquityTicker === "-") {
       setFilteredTransactions(transactions);
@@ -59,16 +63,6 @@ function TransactionsList() {
 
   return (
     <div>
-      <div>
-        <Link to="/">Voltar</Link>
-      </div>
-      <h1>Extrato</h1>
-      <button>
-        <Link to={"/addTransaction"}>Nova Transação</Link>
-      </button>
-      <br />
-      <br />
-
       <select
         name="transactions"
         value={filteredEquityTicker}
@@ -118,7 +112,7 @@ function TransactionsList() {
                 <td>{transaction.price}</td>
                 <td>{transaction.taxes}</td>
                 <td>
-                  <Link to={`/editTransaction/${transaction.id}`}>
+                  <Link to={`/editar-transacao/${transaction.id}`}>
                     <button>Editar</button>
                   </Link>
                 </td>
