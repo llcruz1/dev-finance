@@ -1,9 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  createEntityAdapter,
-  EntityState,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
 
@@ -22,7 +17,7 @@ interface Equity {
 }
 
 interface EquityState extends EntityState<Equity> {
-  status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted";
+  status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted" | "refreshed";
   error: any;
 }
 
@@ -35,53 +30,60 @@ const initialState: EquityState = equitiesAdapter.getInitialState({
 });
 
 // API calls
-export const addEquity = createAsyncThunk(
-  "equities/addEquity",
-  async (equity: Equity) => {
-    const response = await api.post(`api/equities`, equity);
-    return response.data;
-  }
-);
+export const addEquity = createAsyncThunk("equities/addEquity", async (equity: Equity) => {
+  const response = await api.post(`api/equities`, equity);
+  return response.data;
+});
 
-export const getEquities = createAsyncThunk(
-  "equities/getEquities",
-  async () => {
-    const { data } = await api.get("api/equities");
+export const getEquities = createAsyncThunk("equities/getEquities", async () => {
+  const { data } = await api.get("api/equities");
 
-    const equities = data.map((equity: Equity) => {
-      return {
-        id: equity.id,
-        averagePrice: equity.averagePrice.toFixed(2),
-        currentPrice: equity.currentPrice.toFixed(2),
-        equityType: equity.equityType,
-        groupName: equity.groupName,
-        index: equity.index,
-        broker: equity.broker,
-        name: equity.name,
-        qty: equity.qty,
-        ticker: equity.ticker.toUpperCase(),
-      };
-    });
+  const equities = data.map((equity: Equity) => {
+    return {
+      id: equity.id,
+      averagePrice: equity.averagePrice.toFixed(2),
+      currentPrice: equity.currentPrice.toFixed(2),
+      equityType: equity.equityType,
+      groupName: equity.groupName,
+      index: equity.index,
+      broker: equity.broker,
+      name: equity.name,
+      qty: equity.qty,
+      ticker: equity.ticker.toUpperCase(),
+    };
+  });
 
-    return equities;
-  }
-);
+  return equities;
+});
 
-export const updateEquity = createAsyncThunk(
-  "equities/updateEquity",
-  async (equity: Equity) => {
-    const response = await api.put(`api/equity/${equity.id}`, equity);
-    return response.data;
-  }
-);
+export const getEquityById = createAsyncThunk("equities/getEquityById", async (id: string) => {
+  const { data } = await api.get(`api/equity/${id}`);
 
-export const deleteEquity = createAsyncThunk(
-  "equities/deleteEquity",
-  async (id: String) => {
-    const response = await api.delete(`api/equity/${id}`);
-    return response.data;
-  }
-);
+  const equity = {
+    id: data.id,
+    averagePrice: data.averagePrice.toFixed(2),
+    currentPrice: data.currentPrice.toFixed(2),
+    equityType: data.equityType,
+    groupName: data.groupName,
+    index: data.index,
+    broker: data.broker,
+    name: data.name,
+    qty: data.qty,
+    ticker: data.ticker.toUpperCase(),
+  };
+
+  return equity;
+});
+
+export const updateEquity = createAsyncThunk("equities/updateEquity", async (equity: Equity) => {
+  const response = await api.put(`api/equity/${equity.id}`, equity);
+  return response.data;
+});
+
+export const deleteEquity = createAsyncThunk("equities/deleteEquity", async (id: String) => {
+  const response = await api.delete(`api/equity/${id}`);
+  return response.data;
+});
 
 // Slice logic
 export const equitiesSlice = createSlice({
@@ -107,6 +109,19 @@ export const equitiesSlice = createSlice({
       state.status = "failed";
       state.error = action.error.message;
     });
+    //
+    builder.addCase(getEquityById.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(getEquityById.fulfilled, (state, action) => {
+      state.status = "refreshed";
+      equitiesAdapter.upsertOne(state, action.payload);
+    });
+    builder.addCase(getEquityById.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+    //
     builder.addCase(updateEquity.pending, (state, action) => {
       state.status = "loading";
     });

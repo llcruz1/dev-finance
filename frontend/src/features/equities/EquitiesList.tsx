@@ -19,14 +19,18 @@ function EquitiesList() {
   }, [status, dispatch]);
 
   useEffect(() => {
-    if (statusTransactions === "saved" || statusTransactions === "deleted") {
+    if (
+      statusTransactions === "saved" ||
+      statusTransactions === "deleted" ||
+      statusTransactions === "refreshed"
+    ) {
       dispatch(getEquities());
     }
   }, [statusTransactions, dispatch]);
 
-  function handleDeleteEquity(id: string) {
+  /*function handleDeleteEquity(id: string) {
     dispatch(deleteEquity(id));
-  }
+  }*/
 
   return (
     <div>
@@ -41,7 +45,7 @@ function EquitiesList() {
             <th>Preço Médio</th>
             <th>Preço Atual</th>
             <th>Rentabilidade</th>
-            <th>Total: {count} equities</th>
+            <th>Total: {count} ativos</th>
           </tr>
         </thead>
         {status === "loading" ? (
@@ -74,9 +78,7 @@ function EquitiesList() {
                   ).toFixed(2)}{" "}
                   %
                 </td>
-                <td>
-                  <button onClick={() => handleDeleteEquity(equity.id)}>Delete</button>
-                </td>
+                <td>{/*<button onClick={() => handleDeleteEquity(equity.id)}>Delete</button>*/}</td>
               </tr>
             ))}
           </tbody>

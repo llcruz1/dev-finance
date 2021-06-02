@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from 
 import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
 import { format, parseISO } from "date-fns";
-import ptBR from "date-fns/locale/pt-BR";
+//import ptBR from "date-fns/locale/pt-BR";
 
 // Types
 interface Transaction {
@@ -15,8 +15,17 @@ interface Transaction {
   taxes: number;
 }
 
+interface AddTransaction {
+  ticker: string;
+  operationType: string;
+  operationDate: string;
+  qty: number;
+  price: number;
+  taxes: number;
+}
+
 interface TransactionState extends EntityState<Transaction> {
-  status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted";
+  status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted" | "refreshed";
   error: any;
 }
 
@@ -31,7 +40,7 @@ const initialState: TransactionState = transactionsAdapter.getInitialState({
 // API calls
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
-  async (transaction: Transaction) => {
+  async (transaction: AddTransaction) => {
     const response = await api.post(`api/transactions`, transaction);
     return response.data;
   },
@@ -54,6 +63,25 @@ export const getTransactions = createAsyncThunk("transactions/getTransactions", 
 
   return transactions;
 });
+
+export const getTransactionById = createAsyncThunk(
+  "transaction/getTransactionById",
+  async (id: string) => {
+    const { data } = await api.get(`api/transaction/${id}`);
+
+    const transaction = {
+      id: data.id,
+      ticker: data.ticker,
+      operationType: data.operationType,
+      operationDate: format(parseISO(data.operationDate), "yyyy-MM-dd"),
+      qty: data.qty,
+      price: data.price.toFixed(2),
+      taxes: data.taxes.toFixed(2),
+    };
+
+    return transaction;
+  },
+);
 
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
@@ -92,6 +120,17 @@ export const transactionsSlice = createSlice({
       transactionsAdapter.setAll(state, action.payload);
     });
     builder.addCase(getTransactions.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+    builder.addCase(getTransactionById.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(getTransactionById.fulfilled, (state, action) => {
+      state.status = "refreshed";
+      transactionsAdapter.upsertOne(state, action.payload);
+    });
+    builder.addCase(getTransactionById.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

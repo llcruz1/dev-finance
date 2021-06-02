@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { getTransactions, deleteTransaction, selectAllTransactions } from "./transactionsSlice";
 import { selectAllEquities } from "../equities/equitiesSlice";
@@ -34,14 +34,12 @@ function TransactionsList({ ticker }: Props) {
 
   useEffect(() => {
     // Fetch transactions
-    console.log(1, ticker, status);
-    if (status === "idle" || status === "saved" || status === "deleted") {
+    if (status === "idle" || status === "saved" || status === "deleted" || status === "refreshed") {
       dispatch(getTransactions());
     }
   }, [status, dispatch]);
 
   useEffect(() => {
-    console.log(2, ticker, status);
     // Filter transactions
     if (filteredEquityTicker === "-") {
       setFilteredTransactions(transactions);
@@ -86,7 +84,7 @@ function TransactionsList({ ticker }: Props) {
             <th>Preço</th>
             <th>Taxas</th>
             <th></th>
-            <th>Total: {filteredTransactions.length} transactions</th>
+            <th>Total: {filteredTransactions.length} transações</th>
           </tr>
         </thead>
         {status === "loading" ? (

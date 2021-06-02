@@ -3,7 +3,6 @@ import LoginPage from "../pages/LoginPage";
 import HomePage from "../pages/HomePage";
 import StatementPage from "../pages/StatementPage";
 import EquityForm from "../features/equities/EquityForm";
-import TransactionsList from "../features/transactions/TransactionsList";
 import TransactionForm from "../features/transactions/TransactionForm";
 
 function App() {
