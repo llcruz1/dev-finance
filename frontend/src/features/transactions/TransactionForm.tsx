@@ -104,6 +104,17 @@ function TransactionForm() {
           />
         </div>
 
+        {/*}
+        <div>
+          <label>Tipo da Operação: </label>
+          <select required value={operationType} onChange={(e) => setOperationType(e.target.value)}>
+            <option value="C">Compra</option>
+            <option value="V">Venda</option>
+            <option value="D">Desdobramento</option>
+            <option value="B">Bonificação</option>
+          </select>
+        </div> */}
+
         <div>
           <label>Data da Operação: </label>
           <input

@@ -7,7 +7,7 @@ from utils.getCurrentPrice import getCurrentPrice
         
 class EquitiesViews(Resource):
     def get(self):
-        equities = Equity.objects()
+        equities = Equity.objects.all().filter(qty__gt=0)
         if (equities):
             for equity in equities:
                 equity.currentPrice = getCurrentPrice(equity.ticker, equity.index)

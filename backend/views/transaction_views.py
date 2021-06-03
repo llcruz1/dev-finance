@@ -42,6 +42,7 @@ class TransactionByIDViews(Resource):
         
             #Update EQUITY (qty, averagePrice)
             returnUpdate = updateEquityFromTransaction(transaction, "DEL")
+
             if (returnUpdate['id'] == '-1'): 
                res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
             else:

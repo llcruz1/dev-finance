@@ -24,11 +24,11 @@ function TransactionsList({ ticker }: Props) {
   const history = useHistory();
 
   const transactions = useAppSelector(selectAllTransactions);
-  const equities = useAppSelector(selectAllEquities);
-  const statusEquities = useAppSelector((state) => state.equities.status);
-
   const status = useAppSelector((state) => state.transactions.status);
   const error = useAppSelector((state) => state.transactions.error);
+
+  const equities = useAppSelector(selectAllEquities);
+  const statusEquities = useAppSelector((state) => state.equities.status);
 
   const [filteredEquityTicker, setFilteredEquityTicker] = useState<string>(ticker ? ticker : "-");
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
@@ -100,7 +100,7 @@ function TransactionsList({ ticker }: Props) {
         {status === "loading" ? (
           <tbody>
             <tr>
-              <td>Loading...</td>
+              <td>Carregando...</td>
             </tr>
           </tbody>
         ) : status === "failed" ? (

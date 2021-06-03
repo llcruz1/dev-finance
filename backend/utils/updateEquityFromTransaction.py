@@ -1,4 +1,5 @@
 from models.equity_model import Equity
+from models.transaction_model import Transaction
 
 #Insert e Delete Transaction
 def updateEquityFromTransaction(transaction, dbTransactionType):
@@ -18,9 +19,6 @@ def updateEquityFromTransaction(transaction, dbTransactionType):
             qtyEquity     = float(equity[0].qty)
             priceEquity   = float(equity[0].averagePrice)
 
-            print(ticker,qty,price,qtyEquity,priceEquity)
-
-
             if (operationType == "C"):
                 if(qtyEquity + qty) == 0:
                     price = 0
@@ -33,9 +31,20 @@ def updateEquityFromTransaction(transaction, dbTransactionType):
                 price = priceEquity
                 qty   = qtyEquity - qty
 
-            equity.update(qty=qty,averagePrice=price)
-            res = {'id': str(equity[0].id), 'error': ''}
-            
+            if (qty < 0):
+                res = {'id': '-1', 'error': 'Quantidade negativa'}
+
+            else:
+                equity.update(qty=qty,averagePrice=price)
+                res = {'id': str(equity[0].id), 'error': ''}
+
+                if (dbTransactionType == "DEL" and qty == 0):
+                    transactionsCount  = Transaction.objects.all().filter(ticker=ticker).count()
+
+                    if (transactionsCount == 1):
+                        equity.delete()
+                        res = {'id': '0', 'error': ''}
+
         elif (dbTransactionType == "INS") and operationType == "C":
             #Insert EQUITY
             body = {

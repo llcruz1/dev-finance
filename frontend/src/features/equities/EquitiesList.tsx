@@ -49,7 +49,7 @@ function EquitiesList() {
         {status === "loading" ? (
           <tbody>
             <tr>
-              <td>Loading...</td>
+              <td>Carregando...</td>
             </tr>
           </tbody>
         ) : status === "failed" ? (
