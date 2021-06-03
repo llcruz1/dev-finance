@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Link } from "react-router-dom";
-import { getEquities, deleteEquity, selectAllEquities, selectTotalEquities } from "./equitiesSlice";
+import { getEquities, selectAllEquities, selectTotalEquities } from "./equitiesSlice";
 
 function EquitiesList() {
   const dispatch = useAppDispatch();
@@ -28,10 +28,6 @@ function EquitiesList() {
     }
   }, [statusTransactions, dispatch]);
 
-  /*function handleDeleteEquity(id: string) {
-    dispatch(deleteEquity(id));
-  }*/
-
   return (
     <div>
       <h1>Meus Ativos</h1>
@@ -45,7 +41,9 @@ function EquitiesList() {
             <th>Preço Médio</th>
             <th>Preço Atual</th>
             <th>Rentabilidade</th>
-            <th>Total: {count} ativos</th>
+            <th>
+              Total: {count} {count === 1 ? "ativo" : "ativos"}
+            </th>
           </tr>
         </thead>
         {status === "loading" ? (
@@ -78,7 +76,7 @@ function EquitiesList() {
                   ).toFixed(2)}{" "}
                   %
                 </td>
-                <td>{/*<button onClick={() => handleDeleteEquity(equity.id)}>Delete</button>*/}</td>
+                <td></td>
               </tr>
             ))}
           </tbody>

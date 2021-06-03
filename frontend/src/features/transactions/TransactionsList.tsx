@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { getTransactions, deleteTransaction, selectAllTransactions } from "./transactionsSlice";
-import { selectAllEquities } from "../equities/equitiesSlice";
+import { getEquities, selectAllEquities } from "../equities/equitiesSlice";
 
 interface Transaction {
   id: string;
@@ -25,6 +25,7 @@ function TransactionsList({ ticker }: Props) {
 
   const transactions = useAppSelector(selectAllTransactions);
   const equities = useAppSelector(selectAllEquities);
+  const statusEquities = useAppSelector((state) => state.equities.status);
 
   const status = useAppSelector((state) => state.transactions.status);
   const error = useAppSelector((state) => state.transactions.error);
@@ -38,6 +39,12 @@ function TransactionsList({ ticker }: Props) {
       dispatch(getTransactions());
     }
   }, [status, dispatch]);
+
+  useEffect(() => {
+    if (statusEquities === "idle") {
+      dispatch(getEquities());
+    }
+  });
 
   useEffect(() => {
     // Filter transactions
@@ -84,7 +91,10 @@ function TransactionsList({ ticker }: Props) {
             <th>Preço</th>
             <th>Taxas</th>
             <th></th>
-            <th>Total: {filteredTransactions.length} transações</th>
+            <th>
+              Total: {filteredTransactions.length}{" "}
+              {filteredTransactions.length === 1 ? "transação" : "transações"}
+            </th>
           </tr>
         </thead>
         {status === "loading" ? (
