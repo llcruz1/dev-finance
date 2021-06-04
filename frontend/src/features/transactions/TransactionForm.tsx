@@ -18,7 +18,7 @@ function TransactionForm() {
   const status = useAppSelector((state) => state.transactions.status);
 
   const [ticker, setTicker] = useState<string>("");
-  const [operationType, setOperationType] = useState<string>("");
+  const [operationType, setOperationType] = useState<string>("C");
   const [operationDate, setOperationDate] = useState<string>("");
   const [qty, setQty] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
@@ -36,7 +36,7 @@ function TransactionForm() {
   }, [transaction]);
 
   useEffect(() => {
-    if (status === "idle") {
+    if (status === "idle" && id) {
       dispatch(getTransactionById(id));
     }
   }, [dispatch, status, id]);
@@ -93,27 +93,13 @@ function TransactionForm() {
 
         <div>
           <label>Tipo da Operação: </label>
-          <input
-            required
-            type="text"
-            placeholder="Tipo da Operação"
-            //defaultValue={transaction?.operationType}
-            value={operationType}
-            onChange={(e) => setOperationType(e.target.value)}
-            //{...register("operationType")}
-          />
-        </div>
-
-        {/*}
-        <div>
-          <label>Tipo da Operação: </label>
           <select required value={operationType} onChange={(e) => setOperationType(e.target.value)}>
             <option value="C">Compra</option>
             <option value="V">Venda</option>
             <option value="D">Desdobramento</option>
             <option value="B">Bonificação</option>
           </select>
-        </div> */}
+        </div>
 
         <div>
           <label>Data da Operação: </label>
