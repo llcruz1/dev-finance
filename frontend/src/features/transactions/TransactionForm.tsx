@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Link, useParams, useHistory } from "react-router-dom";
+import { format } from "date-fns";
 //import { useForm } from "react-hook-form";
 import {
   updateTransaction,
@@ -28,7 +29,7 @@ function TransactionForm() {
     if (transaction) {
       setTicker(transaction.ticker);
       setOperationType(transaction.operationType);
-      setOperationDate(transaction.operationDate);
+      setOperationDate(format(new Date(transaction.operationDate), "yyyy-dd-MM")); //
       setQty(transaction.qty);
       setPrice(transaction.price);
       setTaxes(transaction.taxes);

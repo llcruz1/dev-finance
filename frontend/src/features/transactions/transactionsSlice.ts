@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from 
 import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
 import { format, parseISO } from "date-fns";
-//import ptBR from "date-fns/locale/pt-BR";
+import ptBR from "date-fns/locale/pt-BR";
 
 // Types
 interface Transaction {
@@ -54,7 +54,9 @@ export const getTransactions = createAsyncThunk("transactions/getTransactions", 
       id: transaction.id,
       ticker: transaction.ticker,
       operationType: transaction.operationType,
-      operationDate: format(parseISO(transaction.operationDate), "yyyy-MM-dd"),
+      operationDate: format(parseISO(transaction.operationDate), "dd/MM/yyyy", {
+        locale: ptBR,
+      }),
       qty: transaction.qty,
       price: transaction.price.toFixed(2),
       taxes: transaction.taxes.toFixed(2),
