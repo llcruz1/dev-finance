@@ -10,7 +10,7 @@ class EquitiesViews(Resource):
         equities = Equity.objects.all().filter(qty__gt=0)
         if (equities):
             for equity in equities:
-                equity.currentPrice = getCurrentPrice(equity.ticker, equity.index)
+                equity.currentPrice = getCurrentPrice(equity.ticker, equity.market)
         return jsonify(equity_serializer.dump(equities, many=True))
 
     def post(self):
@@ -21,7 +21,7 @@ class EquitiesViews(Resource):
 class EquityByIDViews(Resource):
     def get(self, id):
         equity = Equity.objects.get(id=id)
-        equity.currentPrice = getCurrentPrice(equity.ticker, equity.index)
+        equity.currentPrice = getCurrentPrice(equity.ticker, equity.market)
         return equity_serializer.dump(equity)
 
     def delete(self, id):

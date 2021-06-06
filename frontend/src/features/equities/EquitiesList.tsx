@@ -65,7 +65,7 @@ function EquitiesList() {
                 <td>
                   <Link to={`/extrato/${equity.ticker}`}>{equity.ticker}</Link>
                 </td>
-                <td>{equity.equityType}</td>
+                <td>{equity.market}</td>
                 <td>{equity.qty}</td>
                 <td>{equity.averagePrice}</td>
                 <td>{equity.currentPrice}</td>

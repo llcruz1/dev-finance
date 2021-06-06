@@ -1,7 +1,7 @@
 import yfinance as yf
 
-def getCurrentPrice(symbol, index):
-    if (index == "B3"):
+def getCurrentPrice(symbol, market):
+    if (market == "BR"):
         symbol += ".SA"
 
     try:

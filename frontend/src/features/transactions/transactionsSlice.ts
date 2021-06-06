@@ -8,6 +8,8 @@ import ptBR from "date-fns/locale/pt-BR";
 interface Transaction {
   id: string;
   ticker: string;
+  market: string;
+  broker: string;
   operationType: string;
   operationDate: string;
   qty: number;
@@ -17,6 +19,8 @@ interface Transaction {
 
 interface AddTransaction {
   ticker: string;
+  market: string;
+  broker: string;
   operationType: string;
   operationDate: string;
   qty: number;
@@ -53,6 +57,8 @@ export const getTransactions = createAsyncThunk("transactions/getTransactions", 
     return {
       id: transaction.id,
       ticker: transaction.ticker,
+      market: transaction.market,
+      broker: transaction.broker,
       operationType: transaction.operationType,
       operationDate: format(parseISO(transaction.operationDate), "dd/MM/yyyy", {
         locale: ptBR,
@@ -74,6 +80,8 @@ export const getTransactionById = createAsyncThunk(
     const transaction = {
       id: data.id,
       ticker: data.ticker,
+      market: data.market,
+      broker: data.broker,
       operationType: data.operationType,
       operationDate: format(parseISO(data.operationDate), "yyyy-MM-dd"),
       qty: data.qty,

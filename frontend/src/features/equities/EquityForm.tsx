@@ -10,7 +10,7 @@ interface Equity {
   currentPrice: number;
   equityType: string;
   groupName: string;
-  index: string;
+  market: string;
   broker: string;
   name: string;
   qty: number;
@@ -41,7 +41,7 @@ function EquityForm() {
           <input
             type="text"
             placeholder="Bolsa"
-            defaultValue={equity ? equity.index : ""}
+            defaultValue={equity ? equity.market : ""}
             {...register("index")}
           />
         </div>
@@ -73,16 +73,6 @@ function EquityForm() {
             placeholder="Nome"
             defaultValue={equity ? equity.name : ""}
             {...register("name")}
-          />
-        </div>
-
-        <div>
-          <label>Tipo: </label>
-          <input
-            type="text"
-            placeholder="Tipo"
-            defaultValue={equity ? equity.equityType : ""}
-            {...register("equityType")}
           />
         </div>
 

@@ -8,6 +8,7 @@ import { getEquities, selectAllEquities } from "../equities/equitiesSlice";
 interface Transaction {
   id: string;
   ticker: string;
+  market: string;
   operationType: string;
   operationDate: string;
   qty: number;

@@ -5,7 +5,9 @@ from models.transaction_model import Transaction
 def updateEquityFromTransaction(transaction, dbTransactionType):
     try:
         operationType = transaction['operationType']
+        market = transaction['market']
         ticker  = transaction['ticker']
+        broker = transaction['broker']
         qty     = float(transaction['qty'])
         price   = float(transaction['price'])
         
@@ -47,16 +49,27 @@ def updateEquityFromTransaction(transaction, dbTransactionType):
 
         elif (dbTransactionType == "INS") and operationType == "C":
             #Insert EQUITY
-            body = {
-                "broker": "Clear",
-                "ticker": ticker,
-                "name": "Nome da Acao",
-                "index": "B3",
-                "groupName": "Ações Brasileiras",
-                "equityType": "Ação",
-                "qty": qty,
-                "averagePrice": price
-            }
+            if market == 'BR':
+                body = {
+                    "broker": broker,
+                    "ticker": ticker,
+                    "name": "Nome da Acao",
+                    "groupName": "Ações Brasileiras",
+                    "market": market,
+                    "qty": qty,
+                    "averagePrice": price
+                }
+            elif market == 'US':
+                body = {
+                    "broker": broker,
+                    "ticker": ticker,
+                    "name": "Nome da Acao",
+                    "groupName": "Ações Americanas",
+                    "market": market,
+                    "qty": qty,
+                    "averagePrice": price
+                }               
+            
             equity = Equity(**body).save()
             res = {'id': str(equity.id), 'error': ''}
 

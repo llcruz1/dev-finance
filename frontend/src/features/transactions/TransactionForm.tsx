@@ -19,6 +19,8 @@ function TransactionForm() {
   const status = useAppSelector((state) => state.transactions.status);
 
   const [ticker, setTicker] = useState<string>("");
+  const [market, setMarket] = useState<string>("BR");
+  const [broker, setBroker] = useState<string>("");
   const [operationType, setOperationType] = useState<string>("C");
   const [operationDate, setOperationDate] = useState<string>("");
   const [qty, setQty] = useState<number>(0);
@@ -28,6 +30,8 @@ function TransactionForm() {
   useEffect(() => {
     if (transaction) {
       setTicker(transaction.ticker);
+      setMarket(transaction.market);
+      setBroker(transaction.broker);
       setOperationType(transaction.operationType);
       setOperationDate(format(new Date(transaction.operationDate), "yyyy-dd-MM")); //
       setQty(transaction.qty);
@@ -49,6 +53,8 @@ function TransactionForm() {
         updateTransaction({
           id: transaction.id,
           ticker: ticker,
+          market: market,
+          broker: broker,
           operationType: operationType,
           operationDate: operationDate,
           qty: qty,
@@ -60,6 +66,8 @@ function TransactionForm() {
       dispatch(
         addTransaction({
           ticker,
+          market,
+          broker,
           operationType,
           operationDate,
           qty,
@@ -80,6 +88,14 @@ function TransactionForm() {
       </div>
       <form onSubmit={onSubmit}>
         <div>
+          <label>Tipo de ação: </label>
+          <select required value={market} onChange={(e) => setMarket(e.target.value)}>
+            <option value="BR">Ação Brasileira</option>
+            <option value="US">Ação Americana</option>
+          </select>
+        </div>
+
+        <div>
           <label>Ativo: </label>
           <input
             required
@@ -88,6 +104,19 @@ function TransactionForm() {
             //defaultValue={transaction?.ticker}
             value={ticker}
             onChange={(e) => setTicker(e.target.value)}
+            //{...register("ticker")}
+          />
+        </div>
+
+        <div>
+          <label>Banco ou corretora: </label>
+          <input
+            required
+            type="text"
+            placeholder="Banco ou corretora"
+            //defaultValue={transaction?.ticker}
+            value={broker}
+            onChange={(e) => setBroker(e.target.value)}
             //{...register("ticker")}
           />
         </div>
@@ -120,8 +149,7 @@ function TransactionForm() {
           <input
             required
             type="number"
-            step="0.000001"
-            placeholder="Quantidade"
+            step={market === "US" ? "0.000001" : "1"}
             //defaultValue={transaction?.qty}
             value={qty}
             onChange={(e) => setQty(Number(e.target.value))}
@@ -130,12 +158,11 @@ function TransactionForm() {
         </div>
 
         <div>
-          <label>Preço: </label>
+          <label>Preço: {market === "US" ? "$" : "R$"} </label>
           <input
             required
             type="number"
-            step="0.01"
-            placeholder="Preço"
+            step={market === "US" ? "0.000001" : "0.01"}
             //defaultValue={transaction?.price}
             value={price}
             onChange={(e) => setPrice(Number(e.target.value))}
@@ -144,10 +171,10 @@ function TransactionForm() {
         </div>
 
         <div>
-          <label>Taxas (Opcional): </label>
+          <label>Taxas (Opcional): {market === "US" ? "$" : "R$"} </label>
           <input
             type="number"
-            step="0.01"
+            step={market === "US" ? "0.000001" : "0.01"}
             placeholder="Taxas"
             //defaultValue={transaction?.taxes}
             value={taxes}

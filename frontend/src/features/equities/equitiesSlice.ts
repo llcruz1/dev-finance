@@ -7,9 +7,8 @@ interface Equity {
   id: string;
   averagePrice: number;
   currentPrice: number;
-  equityType: string;
   groupName: string;
-  index: string;
+  market: string;
   broker: string;
   name: string;
   qty: number;
@@ -43,9 +42,8 @@ export const getEquities = createAsyncThunk("equities/getEquities", async () => 
       id: equity.id,
       averagePrice: equity.averagePrice.toFixed(2),
       currentPrice: equity.currentPrice.toFixed(2),
-      equityType: equity.equityType,
       groupName: equity.groupName,
-      index: equity.index,
+      market: equity.market,
       broker: equity.broker,
       name: equity.name,
       qty: equity.qty,
@@ -65,7 +63,7 @@ export const getEquityById = createAsyncThunk("equities/getEquityById", async (i
     currentPrice: data.currentPrice.toFixed(2),
     equityType: data.equityType,
     groupName: data.groupName,
-    index: data.index,
+    market: data.market,
     broker: data.broker,
     name: data.name,
     qty: data.qty,
