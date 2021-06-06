@@ -1,9 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Link } from "react-router-dom";
 import { getEquities, selectAllEquities, selectTotalEquities } from "./equitiesSlice";
 
-function EquitiesList() {
+interface Equity {
+  id: string;
+  averagePrice: number;
+  currentPrice: number;
+  profit: number;
+  groupName: string;
+  market: string;
+  broker: string;
+  name: string;
+  qty: number;
+  ticker: string;
+}
+
+interface Props {
+  market?: string;
+}
+
+function EquitiesList({ market }: Props) {
   const dispatch = useAppDispatch();
   const equities = useAppSelector(selectAllEquities);
   const status = useAppSelector((state) => state.equities.status);
@@ -11,6 +28,9 @@ function EquitiesList() {
   const count = useAppSelector(selectTotalEquities);
 
   const statusTransactions = useAppSelector((state) => state.transactions.status);
+
+  console.log(market);
+  const [filteredEquities, setFilteredEquities] = useState<Equity[]>([]);
 
   useEffect(() => {
     if (status === "idle" || status === "saved" || status === "deleted") {
@@ -28,6 +48,15 @@ function EquitiesList() {
     }
   }, [statusTransactions, dispatch]);
 
+  useEffect(() => {
+    // Filter transactions
+    if (market === "-") {
+      setFilteredEquities(equities);
+    } else {
+      setFilteredEquities(equities.filter((equity) => equity.market === market));
+    }
+  }, [market, equities]);
+
   return (
     <div>
       <h1>Meus Ativos</h1>
@@ -36,7 +65,6 @@ function EquitiesList() {
         <thead>
           <tr>
             <th>Ticker</th>
-            <th>Tipo</th>
             <th>Quantidade</th>
             <th>Preço Médio</th>
             <th>Preço Atual</th>
@@ -60,12 +88,11 @@ function EquitiesList() {
           </tbody>
         ) : (
           <tbody>
-            {equities.map((equity, index) => (
+            {filteredEquities.map((equity, index) => (
               <tr key={index}>
                 <td>
                   <Link to={`/extrato/${equity.ticker}`}>{equity.ticker}</Link>
                 </td>
-                <td>{equity.market}</td>
                 <td>{equity.qty}</td>
                 <td>{equity.averagePrice}</td>
                 <td>{equity.currentPrice}</td>

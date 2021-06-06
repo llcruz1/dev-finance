@@ -1,8 +1,42 @@
-import React from "react";
+import React, { useState, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import EquitiesList from "../features/equities/EquitiesList";
+import { selectAllEquities } from "../features/equities/equitiesSlice";
+import { useAppSelector } from "../app/hooks";
+
+interface Equity {
+  id: string;
+  averagePrice: number;
+  currentPrice: number;
+  profit: number;
+  groupName: string;
+  market: string;
+  broker: string;
+  name: string;
+  qty: number;
+  ticker: string;
+}
 
 function HomePage() {
+  const equities = useAppSelector(selectAllEquities);
+  const [filteredMarket, setFilteredMarket] = useState<string>("-");
+
+  function handleFilteredMarket(e: ChangeEvent<HTMLSelectElement>) {
+    setFilteredMarket(e.target.value);
+  }
+
+  const unique = (list: Equity[]) => {
+    const object = list.reduce(
+      (acc, item) => ({
+        ...acc,
+        [item["market"]]: true,
+      }),
+      {},
+    );
+
+    return Object.keys(object);
+  };
+
   return (
     <div>
       <div>
@@ -16,8 +50,19 @@ function HomePage() {
       <button>
         <Link to={"/extrato"}>Extrato</Link>
       </button>
+      <br />
+      <br />
 
-      <EquitiesList />
+      <select name="wallet" value={filteredMarket} onChange={handleFilteredMarket}>
+        <option value={"-"}>Todos os ativos</option>
+        {unique(equities).map((market) => (
+          <option key={market} value={market}>
+            {market}
+          </option>
+        ))}
+      </select>
+
+      <EquitiesList market={filteredMarket} />
     </div>
   );
 }
