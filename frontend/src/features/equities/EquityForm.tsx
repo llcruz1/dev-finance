@@ -8,6 +8,7 @@ interface Equity {
   id: string;
   averagePrice: number;
   currentPrice: number;
+  profit: number;
   equityType: string;
   groupName: string;
   market: string;

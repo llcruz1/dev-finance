@@ -69,13 +69,7 @@ function EquitiesList() {
                 <td>{equity.qty}</td>
                 <td>{equity.averagePrice}</td>
                 <td>{equity.currentPrice}</td>
-                <td>
-                  {(
-                    ((equity.currentPrice - equity.averagePrice) / equity.currentPrice) *
-                    100
-                  ).toFixed(2)}{" "}
-                  %
-                </td>
+                <td>{equity.profit}%</td>
                 <td></td>
               </tr>
             ))}
