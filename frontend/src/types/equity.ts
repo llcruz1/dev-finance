@@ -5,6 +5,7 @@ export interface Equity {
   profit: number;
   groupName: string;
   market: string;
+  formattedMarket?: string;
   broker: string;
   name: string;
   qty: number;

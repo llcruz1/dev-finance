@@ -5,7 +5,6 @@ import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import { Transaction, TransactionFormInput } from "../../types/transaction";
 import formatOperationType from "../../utils/formatOperationType";
-import formatMarket from "../../utils/formatMarket";
 
 // Types
 interface TransactionState extends EntityState<Transaction> {
@@ -38,7 +37,6 @@ export const getTransactions = createAsyncThunk("transactions/getTransactions", 
       id: transaction.id,
       ticker: transaction.ticker,
       market: transaction.market,
-      formattedMarket: formatMarket(transaction.market),
       broker: transaction.broker,
       operationType: transaction.operationType,
       formattedOperationType: formatOperationType(transaction.operationType),
@@ -64,7 +62,6 @@ export const getTransactionById = createAsyncThunk(
       id: data.id,
       ticker: data.ticker,
       market: data.market,
-      formattedMarket: formatMarket(data.market),
       broker: data.broker,
       operationType: data.operationType,
       formattedOperationType: formatOperationType(data.operationType),

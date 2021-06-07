@@ -13,6 +13,15 @@ function HomePage() {
     setFilteredMarket(e.target.value);
   }
 
+  function formatMarket(market: string) {
+    switch (market) {
+      case "BR":
+        return "Ativos Brasileiros";
+      case "US":
+        return "Ativos Americanos";
+    }
+  }
+
   const unique = (list: Equity[]) => {
     const object = list.reduce(
       (acc, item) => ({
@@ -42,9 +51,9 @@ function HomePage() {
 
       <select name="wallet" value={filteredMarket} onChange={handleFilteredMarket}>
         <option value={"-"}>Todos os ativos</option>
-        {unique(equities).map((market, formattedMarket) => (
+        {unique(equities).map((market) => (
           <option key={market} value={market}>
-            {formattedMarket}
+            {formatMarket(market)}
           </option>
         ))}
       </select>
