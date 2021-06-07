@@ -1,21 +1,9 @@
 import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
+import { Equity } from "../../types/equity";
 
 // Types
-interface Equity {
-  id: string;
-  averagePrice: number;
-  currentPrice: number;
-  profit: number;
-  groupName: string;
-  market: string;
-  broker: string;
-  name: string;
-  qty: number;
-  ticker: string;
-}
-
 interface EquityState extends EntityState<Equity> {
   status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted" | "refreshed";
   error: any;

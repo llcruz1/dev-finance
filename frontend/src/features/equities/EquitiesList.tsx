@@ -2,19 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Link } from "react-router-dom";
 import { getEquities, selectAllEquities, selectTotalEquities } from "./equitiesSlice";
-
-interface Equity {
-  id: string;
-  averagePrice: number;
-  currentPrice: number;
-  profit: number;
-  groupName: string;
-  market: string;
-  broker: string;
-  name: string;
-  qty: number;
-  ticker: string;
-}
+import { Equity } from "../../types/equity";
 
 interface Props {
   market?: string;

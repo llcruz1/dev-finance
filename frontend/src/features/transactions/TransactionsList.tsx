@@ -4,17 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { getTransactions, deleteTransaction, selectAllTransactions } from "./transactionsSlice";
 import { getEquities, selectAllEquities } from "../equities/equitiesSlice";
-
-interface Transaction {
-  id: string;
-  ticker: string;
-  market: string;
-  operationType: string;
-  operationDate: string;
-  qty: number;
-  price: number;
-  taxes: number;
-}
+import { Transaction } from "../../types/transaction";
 
 interface Props {
   ticker?: string;

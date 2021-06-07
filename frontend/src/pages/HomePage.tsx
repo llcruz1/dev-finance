@@ -3,19 +3,7 @@ import { Link } from "react-router-dom";
 import EquitiesList from "../features/equities/EquitiesList";
 import { selectAllEquities } from "../features/equities/equitiesSlice";
 import { useAppSelector } from "../app/hooks";
-
-interface Equity {
-  id: string;
-  averagePrice: number;
-  currentPrice: number;
-  profit: number;
-  groupName: string;
-  market: string;
-  broker: string;
-  name: string;
-  qty: number;
-  ticker: string;
-}
+import { Equity } from "../types/equity";
 
 function HomePage() {
   const equities = useAppSelector(selectAllEquities);
@@ -33,7 +21,6 @@ function HomePage() {
       }),
       {},
     );
-
     return Object.keys(object);
   };
 

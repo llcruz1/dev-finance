@@ -2,11 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
-
-interface User {
-  email: string;
-  password: string;
-}
+import { User } from "../types/user";
 
 function LoginPage() {
   const { register, handleSubmit } = useForm();
@@ -27,11 +23,7 @@ function LoginPage() {
 
         <div>
           <label>Password: </label>
-          <input
-            type="password"
-            placeholder="Password"
-            {...register("password")}
-          />
+          <input type="password" placeholder="Password" {...register("password")} />
         </div>
         <button type="submit">Login</button>
       </form>

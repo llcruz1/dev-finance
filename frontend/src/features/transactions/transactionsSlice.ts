@@ -3,30 +3,9 @@ import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
+import { Transaction, TransactionFormInput } from "../../types/transaction";
 
 // Types
-interface Transaction {
-  id: string;
-  ticker: string;
-  market: string;
-  broker: string;
-  operationType: string;
-  operationDate: string;
-  qty: number;
-  price: number;
-  taxes: number;
-}
-
-interface AddTransaction {
-  ticker: string;
-  market: string;
-  broker: string;
-  operationType: string;
-  operationDate: string;
-  qty: number;
-  price: number;
-  taxes: number;
-}
 
 interface TransactionState extends EntityState<Transaction> {
   status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted" | "refreshed";
@@ -44,7 +23,7 @@ const initialState: TransactionState = transactionsAdapter.getInitialState({
 // API calls
 export const addTransaction = createAsyncThunk(
   "transactions/addTransaction",
-  async (transaction: AddTransaction) => {
+  async (transaction: TransactionFormInput) => {
     const response = await api.post(`api/transactions`, transaction);
     return response.data;
   },
