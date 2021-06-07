@@ -4,9 +4,10 @@ import { api } from "../../services/api";
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import { Transaction, TransactionFormInput } from "../../types/transaction";
+import formatOperationType from "../../utils/formatOperationType";
+import formatMarket from "../../utils/formatMarket";
 
 // Types
-
 interface TransactionState extends EntityState<Transaction> {
   status: "idle" | "loading" | "loaded" | "failed" | "saved" | "deleted" | "refreshed";
   error: any;
@@ -37,9 +38,12 @@ export const getTransactions = createAsyncThunk("transactions/getTransactions", 
       id: transaction.id,
       ticker: transaction.ticker,
       market: transaction.market,
+      formattedMarket: formatMarket(transaction.market),
       broker: transaction.broker,
       operationType: transaction.operationType,
-      operationDate: format(parseISO(transaction.operationDate), "dd/MM/yyyy", {
+      formattedOperationType: formatOperationType(transaction.operationType),
+      operationDate: format(parseISO(transaction.operationDate), "yyyy-MM-dd"),
+      formattedOperationDate: format(parseISO(transaction.operationDate), "dd/MM/yyyy", {
         locale: ptBR,
       }),
       qty: transaction.qty,
@@ -60,9 +64,14 @@ export const getTransactionById = createAsyncThunk(
       id: data.id,
       ticker: data.ticker,
       market: data.market,
+      formattedMarket: formatMarket(data.market),
       broker: data.broker,
       operationType: data.operationType,
+      formattedOperationType: formatOperationType(data.operationType),
       operationDate: format(parseISO(data.operationDate), "yyyy-MM-dd"),
+      formattedOperationDate: format(parseISO(data.operationDate), "dd/MM/yyyy", {
+        locale: ptBR,
+      }),
       qty: data.qty,
       price: data.price.toFixed(2),
       taxes: data.taxes.toFixed(2),

@@ -33,7 +33,7 @@ function TransactionForm() {
       setMarket(transaction.market);
       setBroker(transaction.broker);
       setOperationType(transaction.operationType);
-      setOperationDate(format(new Date(transaction.operationDate), "yyyy-dd-MM")); //
+      setOperationDate(transaction.operationDate); //
       setQty(transaction.qty);
       setPrice(transaction.price);
       setTaxes(transaction.taxes);

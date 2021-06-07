@@ -2,9 +2,12 @@ export interface Transaction {
   id: string;
   ticker: string;
   market: string;
+  formattedMarket?: string;
   broker: string;
   operationType: string;
+  formattedOperationType?: string;
   operationDate: string;
+  formattedOperationDate?: string;
   qty: number;
   price: number;
   taxes: number;

@@ -42,9 +42,9 @@ function HomePage() {
 
       <select name="wallet" value={filteredMarket} onChange={handleFilteredMarket}>
         <option value={"-"}>Todos os ativos</option>
-        {unique(equities).map((market) => (
+        {unique(equities).map((market, formattedMarket) => (
           <option key={market} value={market}>
-            {market}
+            {formattedMarket}
           </option>
         ))}
       </select>

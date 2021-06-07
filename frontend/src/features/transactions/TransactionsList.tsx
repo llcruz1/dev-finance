@@ -57,19 +57,6 @@ function TransactionsList({ ticker }: Props) {
     setFilteredEquityTicker(e.target.value);
   }
 
-  function formatOperationType(operationType: string) {
-    switch (operationType) {
-      case "C":
-        return "Compra";
-      case "V":
-        return "Venda";
-      case "B":
-        return "Bonificação";
-      case "D":
-        return "Desdobramento";
-    }
-  }
-
   return (
     <div>
       <select
@@ -117,9 +104,9 @@ function TransactionsList({ ticker }: Props) {
           <tbody>
             {filteredTransactions.map((transaction) => (
               <tr key={transaction.id}>
-                <td>{transaction.operationDate}</td>
+                <td>{transaction.formattedOperationDate}</td>
                 <td>{transaction.ticker}</td>
-                <td>{formatOperationType(transaction.operationType)}</td>
+                <td>{transaction.formattedOperationType}</td>
                 <td>{transaction.qty}</td>
                 <td>{transaction.price}</td>
                 <td>{transaction.taxes}</td>
