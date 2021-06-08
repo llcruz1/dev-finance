@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, createEntityAdapter, EntityState } from 
 import type { RootState } from "../../app/store";
 import { api } from "../../services/api";
 import { Equity } from "../../types/equity";
+import setCurrency from "../../utils/setCurrency";
 
 // Types
 interface EquityState extends EntityState<Equity> {
@@ -30,10 +31,19 @@ export const getEquities = createAsyncThunk("equities/getEquities", async () => 
     return {
       id: equity.id,
       averagePrice: equity.averagePrice.toFixed(2),
+      averagePriceAsCurrencyString:
+        setCurrency(equity.market) + " " + String(equity.averagePrice.toFixed(2)),
       currentPrice: equity.currentPrice.toFixed(2),
-      profit: Number(
+      currentPriceAsCurrencyString:
+        setCurrency(equity.market) + " " + String(equity.currentPrice.toFixed(2)),
+      profitAsPercentage: Number(
         (((equity.currentPrice - equity.averagePrice) / equity.currentPrice) * 100).toFixed(2),
       ),
+      profitAsCurrency: Number((equity.currentPrice - equity.averagePrice).toFixed(2)),
+      profitAsCurrencyString:
+        setCurrency(equity.market) +
+        " " +
+        String((equity.currentPrice - equity.averagePrice).toFixed(2)),
       groupName: equity.groupName,
       market: equity.market,
       broker: equity.broker,
@@ -52,10 +62,17 @@ export const getEquityById = createAsyncThunk("equities/getEquityById", async (i
   const equity = {
     id: data.id,
     averagePrice: data.averagePrice.toFixed(2),
+    averagePriceAsCurrencyString:
+      setCurrency(data.market) + " " + String(data.averagePrice.toFixed(2)),
     currentPrice: data.currentPrice.toFixed(2),
-    profit: Number(
+    currentPriceAsCurrencyString:
+      setCurrency(data.market) + " " + String(data.currentPrice.toFixed(2)),
+    profitAsPercentage: Number(
       (((data.currentPrice - data.averagePrice) / data.currentPrice) * 100).toFixed(2),
     ),
+    profitAsCurrency: Number((data.currentPrice - data.averagePrice).toFixed(2)),
+    profitAsCurrencyString:
+      setCurrency(data.market) + " " + String((data.currentPrice - data.averagePrice).toFixed(2)),
     equityType: data.equityType,
     groupName: data.groupName,
     market: data.market,

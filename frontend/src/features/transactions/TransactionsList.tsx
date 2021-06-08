@@ -108,8 +108,8 @@ function TransactionsList({ ticker }: Props) {
                 <td>{transaction.ticker}</td>
                 <td>{transaction.formattedOperationType}</td>
                 <td>{transaction.qty}</td>
-                <td>{transaction.price}</td>
-                <td>{transaction.taxes}</td>
+                <td>{transaction.priceAsCurrencyString}</td>
+                <td>{transaction.taxesAsCurrencyString}</td>
                 <td>
                   <Link to={`/editar-transacao/${transaction.id}`}>
                     <button>Editar</button>

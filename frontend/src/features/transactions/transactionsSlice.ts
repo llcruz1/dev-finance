@@ -5,6 +5,7 @@ import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import { Transaction, TransactionFormInput } from "../../types/transaction";
 import formatOperationType from "../../utils/formatOperationType";
+import setCurrency from "../../utils/setCurrency";
 
 // Types
 interface TransactionState extends EntityState<Transaction> {
@@ -46,7 +47,11 @@ export const getTransactions = createAsyncThunk("transactions/getTransactions", 
       }),
       qty: transaction.qty,
       price: transaction.price.toFixed(2),
+      priceAsCurrencyString:
+        setCurrency(transaction.market) + " " + String(transaction.price.toFixed(2)),
       taxes: transaction.taxes.toFixed(2),
+      taxesAsCurrencyString:
+        setCurrency(transaction.market) + " " + String(transaction.taxes.toFixed(2)),
     };
   });
 
@@ -71,7 +76,9 @@ export const getTransactionById = createAsyncThunk(
       }),
       qty: data.qty,
       price: data.price.toFixed(2),
+      priceAsCurrencyString: setCurrency(data.market) + " " + String(data.price.toFixed(2)),
       taxes: data.taxes.toFixed(2),
+      taxesAsCurrencyString: setCurrency(data.market) + " " + String(data.taxes.toFixed(2)),
     };
 
     return transaction;

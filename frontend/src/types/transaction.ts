@@ -2,7 +2,6 @@ export interface Transaction {
   id: string;
   ticker: string;
   market: string;
-  formattedMarket?: string;
   broker: string;
   operationType: string;
   formattedOperationType?: string;
@@ -10,7 +9,9 @@ export interface Transaction {
   formattedOperationDate?: string;
   qty: number;
   price: number;
+  priceAsCurrencyString?: string;
   taxes: number;
+  taxesAsCurrencyString?: string;
 }
 
 export interface TransactionFormInput {

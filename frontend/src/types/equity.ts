@@ -1,11 +1,14 @@
 export interface Equity {
   id: string;
   averagePrice: number;
+  averagePriceAsCurrencyString?: string;
   currentPrice: number;
-  profit: number;
+  currentPriceAsCurrencyString?: string;
+  profitAsPercentage: number;
+  profitAsCurrency: number;
+  profitAsCurrencyString?: string;
   groupName: string;
   market: string;
-  formattedMarket?: string;
   broker: string;
   name: string;
   qty: number;
