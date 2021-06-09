@@ -12,5 +12,9 @@ export interface Equity {
   broker: string;
   name: string;
   qty: number;
+  totalInvested?: number;
+  totalInvestedAsCurrencyString?: string;
+  currentTotal?: number;
+  currentTotalAsCurrencyString?: string;
   ticker: string;
 }

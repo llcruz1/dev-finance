@@ -1,13 +1,26 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import {
+  getEquities,
+  selectAllEquities,
+  selectTotalEquities,
+} from "../features/equities/equitiesSlice";
 import EquitiesList from "../features/equities/EquitiesList";
-import { selectAllEquities } from "../features/equities/equitiesSlice";
-import { useAppSelector } from "../app/hooks";
+import PortfolioOverview from "../features/equities/PortfolioOverview";
 import { Equity } from "../types/equity";
 
 function HomePage() {
+  const dispatch = useAppDispatch();
   const equities = useAppSelector(selectAllEquities);
-  const [filteredMarket, setFilteredMarket] = useState<string>("-");
+  const count = useAppSelector(selectTotalEquities);
+  const [filteredMarket, setFilteredMarket] = useState<string>("BR");
+
+  useEffect(() => {
+    if (!equities) {
+      dispatch(getEquities());
+    }
+  }, [dispatch, equities]);
 
   function handleFilteredMarket(e: ChangeEvent<HTMLSelectElement>) {
     setFilteredMarket(e.target.value);
@@ -49,15 +62,21 @@ function HomePage() {
       <br />
       <br />
 
-      <select name="wallet" value={filteredMarket} onChange={handleFilteredMarket}>
-        <option value={"-"}>Todos os ativos</option>
-        {unique(equities).map((market) => (
-          <option key={market} value={market}>
-            {formatMarket(market)}
-          </option>
-        ))}
-      </select>
+      <PortfolioOverview />
 
+      <h1>Meus Ativos</h1>
+
+      {count > 0 && (
+        <select name="wallet" value={filteredMarket} onChange={handleFilteredMarket}>
+          {unique(equities).map((market) => (
+            <option key={market} value={market}>
+              {formatMarket(market)}
+            </option>
+          ))}
+        </select>
+      )}
+      <br />
+      <br />
       <EquitiesList market={filteredMarket} />
     </div>
   );

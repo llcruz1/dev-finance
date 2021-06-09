@@ -39,16 +39,24 @@ export const getEquities = createAsyncThunk("equities/getEquities", async () => 
       profitAsPercentage: Number(
         (((equity.currentPrice - equity.averagePrice) / equity.currentPrice) * 100).toFixed(2),
       ),
-      profitAsCurrency: Number((equity.currentPrice - equity.averagePrice).toFixed(2)),
+      profitAsCurrency: Number(
+        ((equity.currentPrice - equity.averagePrice) * equity.qty).toFixed(2),
+      ),
       profitAsCurrencyString:
         setCurrency(equity.market) +
         " " +
-        String((equity.currentPrice - equity.averagePrice).toFixed(2)),
+        String(((equity.currentPrice - equity.averagePrice) * equity.qty).toFixed(2)),
       groupName: equity.groupName,
       market: equity.market,
       broker: equity.broker,
       name: equity.name,
       qty: equity.qty,
+      totalInvested: equity.averagePrice * equity.qty,
+      totalInvestedAsCurrencyString:
+        setCurrency(equity.market) + " " + String((equity.averagePrice * equity.qty).toFixed(2)),
+      currentTotal: equity.currentPrice * equity.qty,
+      currentTotalAsCurrencyString:
+        setCurrency(equity.market) + " " + String((equity.currentPrice * equity.qty).toFixed(2)),
       ticker: equity.ticker.toUpperCase(),
     };
   });
@@ -70,15 +78,23 @@ export const getEquityById = createAsyncThunk("equities/getEquityById", async (i
     profitAsPercentage: Number(
       (((data.currentPrice - data.averagePrice) / data.currentPrice) * 100).toFixed(2),
     ),
-    profitAsCurrency: Number((data.currentPrice - data.averagePrice).toFixed(2)),
+    profitAsCurrency: Number(((data.currentPrice - data.averagePrice) * data.qty).toFixed(2)),
     profitAsCurrencyString:
-      setCurrency(data.market) + " " + String((data.currentPrice - data.averagePrice).toFixed(2)),
+      setCurrency(data.market) +
+      " " +
+      String(((data.currentPrice - data.averagePrice) * data.qty).toFixed(2)),
     equityType: data.equityType,
     groupName: data.groupName,
     market: data.market,
     broker: data.broker,
     name: data.name,
     qty: data.qty,
+    totalInvested: data.averagePrice * data.qty,
+    totalInvestedAsCurrencyString:
+      setCurrency(data.market) + " " + String((data.averagePrice * data.qty).toFixed(2)),
+    currentTotal: data.currentPrice * data.qty,
+    currentTotalAsCurrencyString:
+      setCurrency(data.market) + " " + String((data.currentPrice * data.qty).toFixed(2)),
     ticker: data.ticker.toUpperCase(),
   };
 
