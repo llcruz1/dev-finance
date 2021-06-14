@@ -5,7 +5,7 @@ export interface Transaction {
   broker: string;
   operationType: string;
   formattedOperationType?: string;
-  operationDate: string;
+  operationDate: any;
   formattedOperationDate?: string;
   qty: number;
   price: number;

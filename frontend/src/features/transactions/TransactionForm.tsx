@@ -1,43 +1,62 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Link, useParams, useHistory } from "react-router-dom";
-//import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   updateTransaction,
   addTransaction,
   getTransactionById,
   selectTransactionById,
 } from "./transactionsSlice";
+import { yupResolver } from "@hookform/resolvers/yup";
+//import { transactionSchema } from "./transactionSchema";
+import * as yup from "yup";
+import { TransactionFormInput } from "../../types/transaction";
 
 function TransactionForm() {
   const dispatch = useAppDispatch();
-  //const { register, handleSubmit } = useForm();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const transaction = useAppSelector((state) => selectTransactionById(state, id));
   const status = useAppSelector((state) => state.transactions.status);
 
-  const [ticker, setTicker] = useState<string>("");
-  const [market, setMarket] = useState<string>("BR");
-  const [broker, setBroker] = useState<string>("");
-  const [operationType, setOperationType] = useState<string>("C");
-  const [operationDate, setOperationDate] = useState<string>("");
-  const [qty, setQty] = useState<number>(0);
-  const [price, setPrice] = useState<number>(0);
-  const [taxes, setTaxes] = useState<number>(0);
+  function formatDate(date: string) {
+    return new Date(date).toLocaleDateString();
+  }
 
-  useEffect(() => {
-    if (transaction) {
-      setTicker(transaction.ticker);
-      setMarket(transaction.market);
-      setBroker(transaction.broker);
-      setOperationType(transaction.operationType);
-      setOperationDate(transaction.operationDate); //
-      setQty(transaction.qty);
-      setPrice(transaction.price);
-      setTaxes(transaction.taxes);
-    }
-  }, [transaction]);
+  const today = new Date();
+  const mindate = "1900-01-01T00:00:00.000Z";
+
+  const transactionSchema = yup.object().shape({
+    ticker: yup.string().required("Campo Obrigatório"),
+    market: yup.string().required("Campo Obrigatório"),
+    broker: yup.string().required("Campo Obrigatório"),
+    operationType: yup.string().required("Campo Obrigatório"),
+    operationDate: yup
+      .date()
+      .min(mindate, ({ min }) => `O campo deve ser posterior a ${formatDate(mindate)}`)
+      .max(today, ({ max }) => `O campo deve ser igual ou anterior ao dia de hoje`)
+      .typeError("Campo obrigatório")
+      .required("Campo Obrigatório"),
+    qty: yup.number().positive().typeError("Campo Obrigatório").required("Campo Obrigatório"),
+    price: yup.number().positive().typeError("Campo Obrigatório").required("Campo Obrigatório"),
+    taxes: yup.number().typeError(" "),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TransactionFormInput>({
+    resolver: yupResolver(transactionSchema),
+  });
+
+  const [transactionOnLoad, setTransactionOnLoad] = useState(
+    id ? transaction ?? transactionSchema.cast({}) : transactionSchema.cast({}),
+  );
+
+  const [market, setMarket] = useState<string>("BR");
 
   useEffect(() => {
     if (status === "idle" && id) {
@@ -45,35 +64,17 @@ function TransactionForm() {
     }
   }, [dispatch, status, id]);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  useEffect(() => {
+    if (transaction && status === "refreshed") {
+      setTransactionOnLoad(transaction);
+    }
+  }, [transaction, status]);
+
+  function onSubmit(data: TransactionFormInput) {
     if (transaction) {
-      dispatch(
-        updateTransaction({
-          id: transaction.id,
-          ticker: ticker,
-          market: market,
-          broker: broker,
-          operationType: operationType,
-          operationDate: operationDate,
-          qty: qty,
-          price: price,
-          taxes: taxes,
-        }),
-      );
+      dispatch(updateTransaction({ ...data, id: transaction.id }));
     } else {
-      dispatch(
-        addTransaction({
-          ticker,
-          market,
-          broker,
-          operationType,
-          operationDate,
-          qty,
-          price,
-          taxes,
-        }),
-      );
+      dispatch(addTransaction(data));
     }
     history.push("/");
   }
@@ -85,102 +86,105 @@ function TransactionForm() {
         <br />
         <br />
       </div>
-      <form onSubmit={onSubmit}>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Tipo de ação: </label>
-          <select required value={market} onChange={(e) => setMarket(e.target.value)}>
+          <select
+            required
+            defaultValue={transactionOnLoad.market}
+            {...register("market")}
+            onChange={(e) => setMarket(e.target.value)}
+          >
             <option value="BR">Ação Brasileira</option>
             <option value="US">Ação Americana</option>
           </select>
         </div>
+        <p>{errors.market?.message}</p>
 
         <div>
           <label>Ativo: </label>
           <input
-            required
+            {...register("ticker")}
             type="text"
             placeholder="Ativo"
-            //defaultValue={transaction?.ticker}
-            value={ticker}
-            onChange={(e) => setTicker(e.target.value)}
-            //{...register("ticker")}
+            defaultValue={transactionOnLoad.ticker}
           />
         </div>
+        <p>{errors.ticker?.message}</p>
 
         <div>
           <label>Banco ou corretora: </label>
           <input
-            required
+            {...register("broker")}
             type="text"
             placeholder="Banco ou corretora"
-            //defaultValue={transaction?.ticker}
-            value={broker}
-            onChange={(e) => setBroker(e.target.value)}
-            //{...register("ticker")}
+            defaultValue={transactionOnLoad.broker}
           />
         </div>
+        <p>{errors.broker?.message}</p>
 
         <div>
           <label>Tipo da Operação: </label>
-          <select required value={operationType} onChange={(e) => setOperationType(e.target.value)}>
+          <select
+            {...register("operationType")}
+            placeholder="Tipo de Operação"
+            defaultValue={transactionOnLoad.operationType}
+          >
             <option value="C">Compra</option>
             <option value="V">Venda</option>
             <option value="D">Desdobramento</option>
             <option value="B">Bonificação</option>
           </select>
         </div>
+        <p>{errors.operationType?.message}</p>
 
         <div>
           <label>Data da Operação: </label>
           <input
-            required
+            {...register("operationDate")}
             type="date"
             placeholder="Data da Operação"
-            //defaultValue={transaction?.operationDate}
-            value={operationDate}
-            onChange={(e) => setOperationDate(e.target.value)}
-            //{...register("operationDate")}
+            defaultValue={transactionOnLoad.operationDate}
           />
         </div>
+        <p>{errors.operationDate?.message}</p>
 
         <div>
           <label>Quantidade: </label>
           <input
-            required
+            {...register("qty")}
             type="number"
+            placeholder={market === "US" ? "0.000000" : "0"}
             step={market === "US" ? "0.000001" : "1"}
-            //defaultValue={transaction?.qty}
-            value={qty}
-            onChange={(e) => setQty(Number(e.target.value))}
-            //{...register("qty")}
+            defaultValue={transactionOnLoad.qty}
           />
         </div>
+        <p>{errors.qty?.message}</p>
 
         <div>
           <label>Preço: {market === "US" ? "$" : "R$"} </label>
           <input
-            required
+            {...register("price")}
             type="number"
+            placeholder={market === "US" ? "0.000000" : "0.00"}
             step={market === "US" ? "0.000001" : "0.01"}
-            //defaultValue={transaction?.price}
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            //{...register("price")}
+            defaultValue={transactionOnLoad.price}
           />
         </div>
+        <p>{errors.price?.message}</p>
 
         <div>
           <label>Taxas (Opcional): {market === "US" ? "$" : "R$"} </label>
           <input
+            {...register("taxes")}
             type="number"
+            placeholder={market === "US" ? "0.000000" : "0.00"}
             step={market === "US" ? "0.000001" : "0.01"}
-            placeholder="Taxas"
-            //defaultValue={transaction?.taxes}
-            value={taxes}
-            onChange={(e) => setTaxes(Number(e.target.value))}
-            //{...register("taxes")}
+            defaultValue={transactionOnLoad.taxes}
           />
         </div>
+        <p>{errors.taxes?.message}</p>
 
         <button type="submit">Salvar</button>
       </form>
