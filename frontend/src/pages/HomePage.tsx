@@ -7,7 +7,6 @@ import {
   selectTotalEquities,
 } from "../features/equities/equitiesSlice";
 import EquitiesList from "../features/equities/EquitiesList";
-import PortfolioOverview from "../features/equities/PortfolioOverview";
 import { Equity } from "../types/equity";
 
 function HomePage() {
@@ -61,8 +60,6 @@ function HomePage() {
       </button>
       <br />
       <br />
-
-      <PortfolioOverview />
 
       <h1>Meus Ativos</h1>
 
