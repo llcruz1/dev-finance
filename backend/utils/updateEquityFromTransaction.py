@@ -76,7 +76,7 @@ def updateEquityFromTransaction(transaction, dbTransactionType):
         else:
             res = {'id': '-1', 'error': 'Ticker '+ticker+' não encontrado.'}
 
-    except Exception as error:
-        res = {'id': '-1', 'error': str(error)}
+    except Exception as e:
+        res = {'id': '-1', 'error': str(e)}
 
     return res

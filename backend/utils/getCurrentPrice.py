@@ -1,4 +1,5 @@
 import yfinance as yf
+import logging
 
 def getCurrentPrice(symbol, market):
     if (market == "BR"):
@@ -10,7 +11,10 @@ def getCurrentPrice(symbol, market):
     
         currentPrice = round(todays_data['Close'][0], 2)
 
-    except:
+    except Exception as e:
+        logging.error("Failed to get current price for symbol %s", symbol)
+        logging.exception(e)
+        logging.warning("Setting current price to 0...")
         currentPrice = 0
 
     return currentPrice
