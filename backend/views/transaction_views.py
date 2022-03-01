@@ -2,7 +2,7 @@ from flask import request, jsonify
 from models.transaction_model import Transaction
 from serializers.transaction_serializer import transaction_serializer
 from flask_restful import Resource
-from utils.updateEquityFromTransaction import updateEquityFromTransaction
+from utils.update_equity_from_transaction import update_equity_from_transaction
 import logging
         
 class TransactionsViews(Resource):
@@ -21,7 +21,7 @@ class TransactionsViews(Resource):
 
         try:
             logging.info("Updating equity from new transaction...")
-            returnUpdate = updateEquityFromTransaction(body, "INS")
+            returnUpdate = update_equity_from_transaction(body, "INS")
             if (returnUpdate['id'] == '-1'): 
                 res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
             else:
@@ -54,7 +54,7 @@ class TransactionByIDViews(Resource):
             transaction = Transaction.objects.get(id=id)
         
             #Update EQUITY (qty, averagePrice)
-            returnUpdate = updateEquityFromTransaction(transaction, "DEL")
+            returnUpdate = update_equity_from_transaction(transaction, "DEL")
 
             if (returnUpdate['id'] == '-1'): 
                res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
@@ -77,11 +77,11 @@ class TransactionByIDViews(Resource):
             transaction = Transaction.objects.get(id=id)
 
             #Update EQUITY (qty, averagePrice)
-            returnUpdate = updateEquityFromTransaction(transaction, "DEL")
+            returnUpdate = update_equity_from_transaction(transaction, "DEL")
             if (returnUpdate['id'] == '-1'): 
                 res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
             else:
-                returnUpdate = updateEquityFromTransaction(body, "INS")
+                returnUpdate = update_equity_from_transaction(body, "INS")
                 if (returnUpdate['id'] == '-1'): 
                     res = {'id': returnUpdate['id'], 'error': returnUpdate['error']}
                 else:

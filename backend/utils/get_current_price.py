@@ -1,7 +1,7 @@
 import yfinance as yf
 import logging
 
-def getCurrentPrice(symbol, market):
+def get_current_price(symbol, market):
     if (market == "BR"):
         symbol += ".SA"
 

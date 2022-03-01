@@ -2,7 +2,7 @@ from flask import request, jsonify
 from models.equity_model import Equity
 from serializers.equity_serializer import equity_serializer
 from flask_restful import Resource
-from utils.getCurrentPrice import getCurrentPrice
+from utils.get_current_price import get_current_price
 import logging
         
 class EquitiesViews(Resource):
@@ -14,7 +14,7 @@ class EquitiesViews(Resource):
             if (equities):
                 logging.info("Getting current prices...")
                 for equity in equities:
-                    equity.currentPrice = getCurrentPrice(equity.ticker, equity.market)    
+                    equity.currentPrice = get_current_price(equity.ticker, equity.market)    
             return jsonify(equity_serializer.dump(equities, many=True))
 
         except Exception as e:
@@ -37,7 +37,7 @@ class EquityByIDViews(Resource):
         try:
             logging.info("Getting equity of id %s", id)
             equity = Equity.objects.get(id=id)
-            equity.currentPrice = getCurrentPrice(equity.ticker, equity.market)
+            equity.currentPrice = get_current_price(equity.ticker, equity.market)
             return equity_serializer.dump(equity)
 
         except Exception as e:

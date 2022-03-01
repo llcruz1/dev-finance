@@ -2,7 +2,7 @@ from models.equity_model import Equity
 from models.transaction_model import Transaction
 
 #Insert e Delete Transaction
-def updateEquityFromTransaction(transaction, dbTransactionType):
+def update_equity_from_transaction(transaction, dbTransactionType):
     try:
         operationType = transaction['operationType']
         market = transaction['market']
