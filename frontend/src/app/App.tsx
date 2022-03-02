@@ -6,7 +6,7 @@ import TransactionForm from "../features/transactions/TransactionForm";
 
 function App() {
   return (
-    <>
+    <div className="flex bg-gray-100">
       <Router>
         <Route exact path="/" component={HomePage} />
         <Route path="/login" component={LoginPage} />
@@ -14,7 +14,7 @@ function App() {
         <Route path="/adicionar-transacao" component={TransactionForm} />
         <Route path="/editar-transacao/:id" component={TransactionForm} />
       </Router>
-    </>
+    </div>
   );
 }
 
